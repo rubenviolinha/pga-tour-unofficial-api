@@ -31,29 +31,26 @@ See [`ENDPOINTS.md`](ENDPOINTS.md) for the route catalog and variable shapes.
 
 ## Quick start
 
-Python 3.9+ is sufficient; the example client uses only the standard library.
+The repository now includes its own installable, dependency-free Python client:
 
 ```bash
-cd examples
-python3 demo.py
-```
-
-Or use the more feature-complete open-source package that helped inform and
-validate this reference:
-
-```bash
-pip install git+https://github.com/WalrusQuant/pgatourPY.git
+pip install git+https://github.com/rubenviolinha/pga-tour-unofficial-api.git
 ```
 
 ```python
-import pgatourpy as pga
+from pga_tour_api import PgaApi
 
-tournament_id = pga.pga_current_tournament("R")
-leaderboard = pga.pga_leaderboard(tournament_id)
-schedule = pga.pga_schedule(2026, "R")
-players = pga.pga_players("R")
-sg_total = pga.pga_stats("02675", 2026, "R")
+api = PgaApi()
+tournament_id = api.current_tournament("R")
+leaderboard = api.leaderboard(tournament_id)
+schedule = api.schedule(2026, "R")
+players = api.players("R")
+sg_total = api.stats("02675", 2026, "R")
 ```
+
+The native documentation site is configured at
+<https://rubenviolinha.github.io/pga-tour-unofficial-api/>. The source lives in
+[`docs/`](docs/) and publishes from this repository through GitHub Actions.
 
 ## Direct GraphQL request
 
@@ -174,7 +171,7 @@ checked with the MIT-licensed `WalrusQuant/pgatourPY` project. The GraphQL
 documents in this bundle are redistributed from that project under its MIT
 license; see [`LICENSES/pgatourPY-MIT.txt`](LICENSES/pgatourPY-MIT.txt).
 
-Useful upstream references:
+Research and attribution references:
 
 - <https://github.com/WalrusQuant/pgatourPY>
 - <https://walrusquant.github.io/pgatourPY/reference/>
