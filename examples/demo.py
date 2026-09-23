@@ -1,11 +1,8 @@
-"""A few direct calls using pga_api.py. Run from this directory."""
+"""A few calls using the repository's native package."""
 
-from pathlib import Path
-
-from pga_api import PgaApi
+from pga_tour_api import PgaApi
 
 
-ROOT = Path(__file__).resolve().parents[1]
 api = PgaApi()
 
 # REST: season schedule
@@ -17,24 +14,10 @@ players = api.rest("player/list/R")
 print("Player response keys:", list(players))
 
 # GraphQL: any PGA TOUR stat
-stats = api.graphql_file(
-    ROOT / "graphql" / "StatDetails.graphql",
-    {
-        "tourCode": "R",
-        "statId": "02675",  # Strokes Gained: Total
-        "year": 2026,
-        "eventQuery": None,
-    },
-)
-print("Stat rows:", len(stats["statDetails"]["rows"]))
+stats = api.stats("02675", year=2026)  # Strokes Gained: Total
+print("Stat rows:", len(stats["rows"]))
 
 # GraphQL: completed event leaderboard
-leaderboard_response = api.graphql_file(
-    ROOT / "graphql" / "LeaderboardCompressedV3.graphql",
-    {"leaderboardCompressedV3Id": "R2026030"},
-)
-leaderboard = api.decompress(
-    leaderboard_response["leaderboardCompressedV3"]["payload"]
-)
+leaderboard = api.leaderboard("R2026030")
 for row in leaderboard["players"][:5]:
     print(row["scoringData"]["position"], row["player"]["displayName"])
