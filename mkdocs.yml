@@ -30,10 +30,18 @@ theme:
 nav:
   - Home: index.md
   - Getting started: getting-started.md
-  - Python client: python-client.md
-  - Raw endpoints: endpoints.md
+  - Client reference:
+      - DataFrame API: dataframe-api.md
+      - Raw client: python-client.md
+  - Data guide:
+      - Return schemas: data-models.md
+      - Statistics catalog: stats-catalog.md
+      - Raw endpoints: endpoints.md
   - Validation: validation.md
+  - Troubleshooting: troubleshooting.md
+  - Development and testing: development.md
   - Responsible use: responsible-use.md
+  - Changelog: changelog.md
 
 plugins:
   - search
@@ -44,6 +52,8 @@ plugins:
           options:
             show_source: true
             show_root_heading: true
+            show_if_no_docstring: true
+            show_signature_annotations: true
             members_order: source
             docstring_style: google
 

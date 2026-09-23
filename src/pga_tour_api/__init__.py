@@ -1,6 +1,103 @@
-"""Unofficial Python client for PGA TOUR's public browser data APIs."""
+"""Unofficial clients for PGA TOUR's public browser data APIs.
 
-from .client import PgaApi, PgaApiError
+The module exposes two interfaces:
 
-__all__ = ["PgaApi", "PgaApiError"]
-__version__ = "0.1.0"
+``PgaApi``
+    A dependency-light, object-oriented client returning upstream dictionaries.
+
+``pga_*`` functions
+    A normalized pandas DataFrame interface for analysis and applications.
+"""
+
+from ._api import PgaTourError
+from .client import (
+    pga_content,
+    pga_course_stats,
+    pga_course_stats_overview,
+    pga_coverage,
+    pga_current_leaders,
+    pga_current_tournament,
+    pga_fedex_cup,
+    pga_field,
+    pga_field_stats,
+    pga_leaderboard,
+    pga_leaderboard_holes,
+    pga_news,
+    pga_news_franchises,
+    pga_odds,
+    pga_odds_interactivity,
+    pga_odds_markets,
+    pga_player_bio,
+    pga_player_career,
+    pga_player_odds,
+    pga_player_profile,
+    pga_player_results,
+    pga_player_stats,
+    pga_player_tournament_status,
+    pga_players,
+    pga_priority_rankings,
+    pga_schedule,
+    pga_scorecard,
+    pga_scorecard_comparison,
+    pga_shot_details,
+    pga_signature_standings,
+    pga_speed_rounds,
+    pga_stats,
+    pga_tee_times,
+    pga_tourcast_videos,
+    pga_tournament_overview,
+    pga_tournament_past_results,
+    pga_tournaments,
+    pga_videos,
+    pga_weather,
+)
+from .raw import PgaApi, PgaApiError
+from .stat_ids import STAT_IDS
+
+__version__ = "0.2.0"
+
+__all__ = [
+    "PgaApi",
+    "PgaApiError",
+    "PgaTourError",
+    "STAT_IDS",
+    "pga_content",
+    "pga_course_stats",
+    "pga_course_stats_overview",
+    "pga_coverage",
+    "pga_current_leaders",
+    "pga_current_tournament",
+    "pga_fedex_cup",
+    "pga_field",
+    "pga_field_stats",
+    "pga_leaderboard",
+    "pga_leaderboard_holes",
+    "pga_news",
+    "pga_news_franchises",
+    "pga_odds",
+    "pga_odds_interactivity",
+    "pga_odds_markets",
+    "pga_player_bio",
+    "pga_player_career",
+    "pga_player_odds",
+    "pga_player_profile",
+    "pga_player_results",
+    "pga_player_stats",
+    "pga_player_tournament_status",
+    "pga_players",
+    "pga_priority_rankings",
+    "pga_schedule",
+    "pga_scorecard",
+    "pga_scorecard_comparison",
+    "pga_shot_details",
+    "pga_signature_standings",
+    "pga_speed_rounds",
+    "pga_stats",
+    "pga_tee_times",
+    "pga_tourcast_videos",
+    "pga_tournament_overview",
+    "pga_tournament_past_results",
+    "pga_tournaments",
+    "pga_videos",
+    "pga_weather",
+]

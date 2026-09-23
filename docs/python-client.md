@@ -1,8 +1,9 @@
-# Python client
+# Raw client
 
-The native package is intentionally small and dependency-free. Convenience
-methods decode compressed responses but otherwise preserve upstream field names
-and response structures.
+`PgaApi` is the lower-level, object-oriented interface. Its convenience methods
+decode compressed responses but otherwise preserve upstream field names and
+response structures. Use it when you need the original nested JSON rather than
+normalized pandas DataFrames.
 
 ::: pga_tour_api.PgaApi
 

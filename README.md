@@ -13,10 +13,13 @@ publish a compatibility contract, and several large responses are compressed.
 
 - 28 complete GraphQL query documents in [`graphql/`](graphql/)
 - REST and configuration routes
-- A zero-dependency Python client with throttling, retries, and decompression
+- A normalized pandas DataFrame API with 39 convenience functions
+- A raw object-oriented client preserving upstream response structures
 - A machine-readable endpoint manifest
-- A full CSV lookup of PGA TOUR stat IDs
+- An importable catalog and CSV lookup of 467 PGA TOUR stat IDs
 - A live validation report covering 38 useful operations
+- 43 offline fixtures and 88 automated tests
+- Cross-platform CI for Python 3.9–3.13
 
 See [`ENDPOINTS.md`](ENDPOINTS.md) for the route catalog and variable shapes.
 
@@ -31,21 +34,29 @@ See [`ENDPOINTS.md`](ENDPOINTS.md) for the route catalog and variable shapes.
 
 ## Quick start
 
-The repository now includes its own installable, dependency-free Python client:
+Install the repository directly:
 
 ```bash
 pip install git+https://github.com/rubenviolinha/pga-tour-unofficial-api.git
 ```
 
 ```python
+import pga_tour_api as pga
+
+tournament_id = pga.pga_current_tournament("R")
+leaderboard = pga.pga_leaderboard(tournament_id)
+schedule = pga.pga_schedule(2026, "R")
+players = pga.pga_players("R")
+sg_total = pga.pga_stats("02675", 2026, "R")
+```
+
+These functions return normalized pandas DataFrames. For raw dictionaries:
+
+```python
 from pga_tour_api import PgaApi
 
 api = PgaApi()
-tournament_id = api.current_tournament("R")
-leaderboard = api.leaderboard(tournament_id)
-schedule = api.schedule(2026, "R")
-players = api.players("R")
-sg_total = api.stats("02675", 2026, "R")
+raw_leaderboard = api.leaderboard(api.current_tournament())
 ```
 
 The native documentation source lives in [`docs/`](docs/). GitHub Actions
@@ -60,13 +71,11 @@ client contains the value observed on the verification date and lets
 `PGA_API_KEY` override it.
 
 ```python
-from pathlib import Path
-from pga_api import PgaApi
+from pga_tour_api import PgaApi
 
 api = PgaApi()
-query = Path("../graphql/LeaderboardCompressedV3.graphql")
-response = api.graphql_file(
-    query,
+response = api.graphql(
+    "LeaderboardCompressedV3",
     {"leaderboardCompressedV3Id": "R2026030"},
 )
 leaderboard = api.decompress(
@@ -166,10 +175,11 @@ The fallback is less complete than GraphQL but often survives API migrations.
 
 ## Provenance
 
-The route inventory was verified against live PGA TOUR responses and cross-
-checked with the MIT-licensed `WalrusQuant/pgatourPY` project. The GraphQL
-documents in this bundle are redistributed from that project under its MIT
-license; see [`LICENSES/pgatourPY-MIT.txt`](LICENSES/pgatourPY-MIT.txt).
+The route inventory was verified against live PGA TOUR responses. The
+normalized DataFrame layer, query documents, stat catalog, fixtures, and parts
+of the tests were adapted from the MIT-licensed `WalrusQuant/pgatourPY`
+project. See [`NOTICE.md`](NOTICE.md) and
+[`LICENSES/pgatourPY-MIT.txt`](LICENSES/pgatourPY-MIT.txt).
 
 Research and attribution references:
 
