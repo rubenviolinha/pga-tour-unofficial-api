@@ -48,9 +48,9 @@ players = api.players("R")
 sg_total = api.stats("02675", 2026, "R")
 ```
 
-The native documentation site is configured at
-<https://rubenviolinha.github.io/pga-tour-unofficial-api/>. The source lives in
-[`docs/`](docs/) and publishes from this repository through GitHub Actions.
+The native documentation source lives in [`docs/`](docs/). GitHub Actions
+builds and stores a private site artifact on every push. Public GitHub Pages is
+intentionally not enabled while the repository remains private.
 
 ## Direct GraphQL request
 
