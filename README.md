@@ -23,6 +23,10 @@ publish a compatibility contract, and several large responses are compressed.
 
 See [`ENDPOINTS.md`](ENDPOINTS.md) for the route catalog and variable shapes.
 
+See the [expansion roadmap](docs/roadmap.md) for additional data discovered on
+the PGA TOUR website, live verification results, and proposed implementation
+priorities. Roadmap items are not yet included in the package.
+
 ## Service map
 
 | Surface | Base URL | Role |
