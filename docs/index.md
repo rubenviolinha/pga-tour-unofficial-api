@@ -32,7 +32,7 @@ shots = pga.pga_shot_details(
 </div>
 
 <div class="trust-strip">
-  <span><b>33</b> GraphQL operations</span><span><b>44</b> Python functions</span><span><b>467</b> stat IDs</span><span><b>4</b> tour codes</span>
+  <span><b>35</b> GraphQL operations</span><span><b>46</b> Python functions</span><span><b>467</b> stat IDs</span><span><b>4</b> tour codes</span>
 </div>
 
 ## Find your line

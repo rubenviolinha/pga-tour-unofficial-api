@@ -11,14 +11,14 @@ publish a compatibility contract, and several large responses are compressed.
 
 ## What is included
 
-- 33 complete GraphQL query documents in [`graphql/`](graphql/)
+- 35 complete GraphQL query documents in [`graphql/`](graphql/)
 - REST and configuration routes
-- 44 convenience functions: 37 return pandas DataFrames; seven return a string, dictionary, or raw JSON
+- 46 convenience functions: 39 return pandas DataFrames; seven return a string, dictionary, or raw JSON
 - A raw object-oriented client preserving upstream response structures
 - A machine-readable endpoint manifest
 - An importable catalog and CSV lookup of 467 PGA TOUR stat IDs
 - A live validation report covering 38 useful operations
-- 43 offline fixtures and 108 automated tests
+- 43 offline fixtures and 111 automated tests
 - Cross-platform CI for Python 3.9–3.13
 
 See [`ENDPOINTS.md`](ENDPOINTS.md) for the route catalog and variable shapes.

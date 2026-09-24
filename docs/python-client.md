@@ -17,3 +17,6 @@ The raw client also exposes `scorecard_stats(tournament_id, player_id)`,
 These preserve upstream structures; scorecard statistics are automatically decompressed.
 
 The raw client also exposes `player_comparison(player_ids, category="SCORING", year=None, tour="R", tournament_id=None)`, returning the PGA comparison table unchanged.
+
+It also exposes `university_rankings(year=None, week=None)` and
+`university_total_points(season=None, week=None)`.

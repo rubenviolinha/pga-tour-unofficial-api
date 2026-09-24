@@ -2287,3 +2287,42 @@ def pga_player_comparison(player_ids: list[str], category: str = "SCORING",
                          "year": comparison.get("year"), "header": table.get("header"),
                          "tournament_id": tournament_id})
     return result
+
+
+def pga_university_rankings(year: int | None = None, week: int | None = None) -> pd.DataFrame:
+    """Return PGA TOUR University rankings and each player's event history."""
+    data = graphql_request("UniversityRankings", {"year": year, "week": week})
+    payload = data.get("universityRankings") or {}
+    rows = []
+    for player in payload.get("players") or []:
+        row = {k: player.get(k) for k in (
+            "playerId", "rank", "rankColor", "rankingMovement", "rankingMovementAmount",
+            "rankingMovementAmountSort", "displayName", "schoolName", "country",
+            "wins", "top10", "avg", "events")}
+        row["tournaments"] = player.get("tournaments") or []
+        rows.append(row)
+    result = pd.DataFrame(rows)
+    if not result.empty:
+        result.columns = make_unique_snake(result.columns)
+    result.attrs.update({k: v for k, v in payload.items() if k != "players"})
+    return result
+
+
+def pga_university_total_points(season: int | None = None,
+                                week: int | None = None) -> pd.DataFrame:
+    """Return PGA TOUR University combined FedExCup/Korn Ferry points."""
+    data = graphql_request("UniversityTotalPoints", {"season": season, "week": week})
+    payload = data.get("universityTotalPoints") or {}
+    headers = payload.get("headers") or []
+    names = make_unique_snake(headers)
+    rows = []
+    for player in payload.get("players") or []:
+        row = {"player_id": player.get("playerId"), "player_name": player.get("playerName"),
+               "rank": player.get("rank"), "rank_sort": player.get("rankSort")}
+        row.update(dict(zip(names, player.get("data") or [])))
+        row["tournaments"] = player.get("tournaments") or []
+        rows.append(row)
+    result = pd.DataFrame(rows, columns=["player_id", "player_name", "rank", "rank_sort"] + names + ["tournaments"])
+    result.attrs.update({k: v for k, v in payload.items() if k != "players"})
+    result.attrs["headers"] = headers
+    return result

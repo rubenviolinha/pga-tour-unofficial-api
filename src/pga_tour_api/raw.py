@@ -512,3 +512,11 @@ class PgaApi:
         return self._root("PlayerComparison", {
             "tourCode": tour, "playerIds": player_ids, "category": category,
             "year": year, "tournamentId": tournament_id}, "playerComparison")
+
+    def university_rankings(self, year: int | None = None, week: int | None = None) -> Any:
+        """Return PGA TOUR University rankings, selectors and event histories."""
+        return self._root("UniversityRankings", {"year": year, "week": week}, "universityRankings")
+
+    def university_total_points(self, season: int | None = None, week: int | None = None) -> Any:
+        """Return PGA TOUR University combined points table."""
+        return self._root("UniversityTotalPoints", {"season": season, "week": week}, "universityTotalPoints")

@@ -123,6 +123,17 @@ Missing data produces an empty table; mismatched headers raise PgaTourError.
 
 ::: pga_tour_api.pga_all_time_records
 
+### PGA TOUR University
+
+`pga_university_rankings(year=None, week=None)` returns player rankings, schools,
+movement, averages and tournament history. `pga_university_total_points(season=None,
+week=None)` returns the combined points table and preserves source headers and
+navigation metadata in `DataFrame.attrs`.
+
+::: pga_tour_api.pga_university_rankings
+
+::: pga_tour_api.pga_university_total_points
+
 
 ### Season player comparisons
 

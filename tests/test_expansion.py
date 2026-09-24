@@ -106,3 +106,25 @@ def test_player_comparison(mock_graphql):
 def test_player_comparison_empty(mock_graphql):
     mock_graphql({})
     assert p.pga_player_comparison(["001"]).empty
+
+def test_university_rankings(mock_graphql):
+    mock_graphql({"universityRankings": {"year": 2027, "players": [
+        {"playerId": "001", "displayName": "A", "rank": 1, "schoolName": "U",
+         "tournaments": [{"name": "Event", "points": "10"}]}]}})
+    df = p.pga_university_rankings(year=2027)
+    assert df.iloc[0].player_id == "001"
+    assert df.iloc[0].tournaments[0]["name"] == "Event"
+    assert df.attrs["year"] == 2027
+
+def test_university_points(mock_graphql):
+    mock_graphql({"universityTotalPoints": {"headers": ["FedExCup Points", "Combined Points"],
+        "season": 2026, "players": [{"playerId": "001", "playerName": "A",
+        "rank": "1", "rankSort": 1, "data": ["-", "123.4"], "tournaments": []}]}})
+    df = p.pga_university_total_points(season=2026)
+    assert df.iloc[0].combined_points == "123.4"
+    assert df.attrs["headers"] == ["FedExCup Points", "Combined Points"]
+
+def test_university_empty(mock_graphql):
+    mock_graphql({})
+    assert p.pga_university_rankings().empty
+    assert p.pga_university_total_points().empty

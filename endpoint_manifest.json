@@ -386,6 +386,26 @@
       "query_file": "graphql/PlayerComparison.graphql",
       "compressed": false,
       "verified_at": "2026-09-24"
+    },
+    {
+      "transport": "graphql",
+      "method": "POST",
+      "operation": "UniversityRankings",
+      "variables": "year: Int, week: Int",
+      "root_field": "universityRankings",
+      "query_file": "graphql/UniversityRankings.graphql",
+      "compressed": false,
+      "verified_at": "2026-09-24"
+    },
+    {
+      "transport": "graphql",
+      "method": "POST",
+      "operation": "UniversityTotalPoints",
+      "variables": "season: Int, week: Int",
+      "root_field": "universityTotalPoints",
+      "query_file": "graphql/UniversityTotalPoints.graphql",
+      "compressed": false,
+      "verified_at": "2026-09-24"
     }
   ]
-}\n
+}

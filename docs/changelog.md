@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.2 — 2026-09-24
+
+- Add PGA TOUR University rankings and total-points operations with season/week filters.
+- Preserve player event histories, source headers and navigation metadata.
+
 ## 0.3.0 — 2026-09-24
 
 - Add raw and normalized scorecard statistics, full course/hole rankings, record catalogue and record tables.
