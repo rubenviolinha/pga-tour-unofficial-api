@@ -24,9 +24,9 @@ detail calls were not individually tested.
 
 ## Website data confirmed; direct API still to verify
 
-- **DP World Tour eligibility rankings:** the public page contained structured
-  `dpWorldTourRankings` data with 21 official players for 2026. Discover and
-  validate the direct request before adding a supported client function.
+- **DP World Tour eligibility rankings:** implemented via the verified
+  `TourCupSplit` operation with ranking ID `2700`; the 2026 request returned 21
+  official players.
 
 ## Query definitions found; usable data still to verify
 
