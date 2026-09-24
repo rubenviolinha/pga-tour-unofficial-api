@@ -9,20 +9,21 @@ theme:
   features:
     - navigation.instant
     - navigation.sections
+    - navigation.tabs
     - navigation.top
     - search.highlight
     - search.suggest
     - content.code.copy
   palette:
     - scheme: default
-      primary: blue
-      accent: light blue
+      primary: custom
+      accent: lime
       toggle:
         icon: material/weather-night
         name: Switch to dark mode
     - scheme: slate
-      primary: blue
-      accent: light blue
+      primary: custom
+      accent: lime
       toggle:
         icon: material/weather-sunny
         name: Switch to light mode
@@ -56,6 +57,9 @@ plugins:
             show_signature_annotations: true
             members_order: source
             docstring_style: google
+
+extra_css:
+  - stylesheets/extra.css
 
 markdown_extensions:
   - admonition

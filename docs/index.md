@@ -1,137 +1,54 @@
-# PGA TOUR Unofficial API
+<div class="landing-hero">
+  <div class="hero-copy">
+    <p class="eyebrow"><span class="live-dot"></span> OPEN DATA FIELD GUIDE · 2026</p>
+    <h1>Every shot.<br><em>Every stat.</em><br>One Python client.</h1>
+    <p class="hero-lede">Explore the data behind the tour: live leaderboards, player profiles, shot tracking, course stats and more, through a practical Python interface.</p>
+    <div class="hero-actions">
+      <a class="hero-button" href="getting-started/">Get started <span>↗</span></a>
+      <a class="hero-link" href="endpoints/">Browse endpoints <span>→</span></a>
+    </div>
+  </div>
+  <div class="hero-card">
+    <div class="scorecard-top"><span>QUICK START</span><span class="pill">PYTHON</span></div>
+    <pre><code>import pga_tour_api as pga
 
-A self-contained Python client and endpoint reference for the public browser
-data calls used by `pgatour.com`. Access leaderboards, player stats, scorecards,
-shot tracking, tee times, standings, odds, schedules, news, and video.
+# Find this week's event
+event = pga.pga_current_tournament()
+
+# Pull the leaderboard
+field = pga.pga_leaderboard(event)
+
+# Explore shot-by-shot data
+shots = pga.pga_shot_details(
+    event, "34046", round=1
+)</code></pre>
+    <div class="scorecard-foot"><span><i></i> Ready for your notebook</span><span>01 / 03</span></div>
+  </div>
+</div>
+
+<div class="trust-strip">
+  <span><b>28</b> GraphQL operations</span><span><b>39</b> DataFrame functions</span><span><b>467</b> stat IDs</span><span><b>4</b> tour codes</span>
+</div>
+
+## Find your line
+
+<div class="path-grid">
+  <a class="path-card" href="getting-started/"><span class="path-index">01 / START</span><strong>Make your first call</strong><span>Install the client and pull a live leaderboard in a few lines.</span><b class="path-arrow">↗</b></a>
+  <a class="path-card" href="dataframe-api/"><span class="path-index">02 / EXPLORE</span><strong>Work with the data</strong><span>Browse the normalized functions and their return columns.</span><b class="path-arrow">↗</b></a>
+  <a class="path-card" href="endpoints/"><span class="path-index">03 / UNDER THE HOOD</span><strong>Inspect the endpoints</strong><span>See routes, operations, variables and response handling.</span><b class="path-arrow">↗</b></a>
+</div>
+
+## Pick a data route
+
+<div class="data-grid">
+  <div class="data-card"><span class="data-icon">01</span><h3>Follow the tournament</h3><p>Leaderboards, tee times, fields, scorecards and shot-by-shot tracking.</p><a href="dataframe-api/">Live tournament functions →</a></div>
+  <div class="data-card"><span class="data-icon">02</span><h3>Know the players</h3><p>Profiles, career results, player stats and season rankings.</p><a href="data-models/">Explore return schemas →</a></div>
+  <div class="data-card"><span class="data-icon">03</span><h3>Read the course</h3><p>Course information, hole scoring, weather and course-fit stats.</p><a href="stats-catalog/">Browse the stats catalog →</a></div>
+</div>
+
+## Two ways to work
+
+<div class="interface-row"><div><span class="path-index">THE FRIENDLY LAYER</span><h3>DataFrames for analysis</h3><p>Use the <code>pga_*</code> helpers for tidy pandas tables that drop straight into your research workflow.</p><a href="dataframe-api/">See the DataFrame API →</a></div><div><span class="path-index">THE RAW LAYER</span><h3>Responses as delivered</h3><p>Use <code>PgaApi</code> when you need the original response structure or want to work closer to the source.</p><a href="python-client/">See the raw client →</a></div></div>
 
 !!! warning "Unofficial interface"
-    PGA TOUR does not document or support these endpoints. Fields, routes, and
-    the public browser key may change without notice. This project is not
-    affiliated with or endorsed by PGA TOUR.
-
-Two interfaces are included: normalized `pga_*` functions returning pandas
-DataFrames, and `PgaApi` for callers who prefer raw dictionaries and lists.
-
-## Installation
-
-```bash
-pip install git+https://github.com/rubenviolinha/pga-tour-unofficial-api.git
-```
-
-## Quick Start
-
-```python
-import pga_tour_api as pga
-
-# This week's tournament + leaderboard
-tid = pga.pga_current_tournament()
-pga.pga_leaderboard(tid)
-
-# Strokes Gained: Total rankings
-pga.pga_stats("02675")
-
-# Full player directory (2,700+ players)
-pga.pga_players()
-
-# Hole-by-hole scorecard
-pga.pga_scorecard(tid, "34046")
-
-# Shot-level tracking with coordinates
-pga.pga_shot_details(tid, "34046", round=1)
-
-# Full season schedule
-pga.pga_schedule(2026)
-```
-
-## Functions Overview
-
-### Live Tournament Data
-
-| Function | Description |
-|---|---|
-| `pga_current_tournament()` | This week's tournament ID |
-| `pga_leaderboard()` | Full leaderboard with scores, positions, and round-by-round results |
-| `pga_current_leaders()` | Quick top-15 snapshot for in-progress tournaments |
-| `pga_field()` | Tournament field with OWGR and withdrawn flags |
-| `pga_field_stats()` | Current-form or course-fit stats for the field |
-| `pga_leaderboard_holes()` | Hole-by-hole scores for the whole field |
-| `pga_tee_times()` | Tee time groupings with start tees and player assignments |
-| `pga_scorecard()` | Hole-by-hole scorecard with par, score, yardage, and status |
-| `pga_shot_details()` | Shot-by-shot tracking data with coordinates and play-by-play |
-| `pga_odds()` | Betting odds to win for the tournament field |
-| `pga_odds_markets()` | Available betting-market catalog |
-| `pga_player_odds()` | FanDuel markets for one player |
-| `pga_coverage()` | Broadcast and streaming schedule |
-| `pga_weather()` | Hourly and daily forecast |
-| `pga_course_stats()` | Per-hole scoring averages for the host course |
-
-### Statistics & Standings
-
-| Function | Description |
-|---|---|
-| `pga_stats()` | Any of 400+ stats with full player rankings (2004-2026) |
-| `pga_fedex_cup()` | FedExCup standings with projected and official rankings |
-| `pga_signature_standings()` | Signature Event / Aon standings |
-| `pga_priority_rankings()` | Exemption / priority ranking categories |
-| `pga_scorecard_comparison()` | Head-to-head stat comparison between players |
-| `pga_course_stats_overview()` | Season course-stats hub |
-
-### Players & Tournaments
-
-| Function | Description |
-|---|---|
-| `pga_players()` | Full player directory (2,700+ players) |
-| `pga_tournaments()` | Tournament metadata including location, courses, weather |
-| `pga_schedule()` | Season schedule with dates, purse, course, champion |
-| `pga_tournament_overview()` | Overview tiles, defending champion, past champions |
-| `pga_tournament_past_results()` | Historical finishes for an event |
-
-### Player Profiles
-
-| Function | Description |
-|---|---|
-| `pga_player_profile()` | Overview with career highlights, wins, earnings, world rank, bio |
-| `pga_player_career()` | Career achievements: starts, cuts, wins, finish distribution |
-| `pga_player_results()` | Tournament-by-tournament results with round scores and earnings |
-| `pga_player_stats()` | Full stat profile (131 stats with ranks) in a single call |
-| `pga_player_bio()` | Biographical text and amateur highlights |
-| `pga_player_tournament_status()` | Live tournament status if currently playing |
-
-### Content
-
-| Function | Description |
-|---|---|
-| `pga_news()` | News articles with filtering and pagination |
-| `pga_news_franchises()` | Available news categories |
-| `pga_videos()` | Player video highlights |
-| `pga_tourcast_videos()` | Shot-by-shot video clips |
-| `pga_content()` | Generic CMS content fragment |
-| `pga_odds_interactivity()` | Odds widget configuration |
-| `pga_speed_rounds()` | Speed-rounds video index |
-
-### Data
-
-| Variable | Description |
-|---|---|
-| `STAT_IDS` | pandas DataFrame of 400+ stat IDs with names and categories |
-
-## Tour Codes
-
-| Code | Tour |
-|---|---|
-| `"R"` | PGA Tour |
-| `"S"` | PGA Tour Champions |
-| `"H"` | Korn Ferry Tour |
-| `"Y"` | PGA Tour Americas |
-
-## Raw response client
-
-```python
-from pga_tour_api import PgaApi
-
-api = PgaApi()
-raw_leaderboard = api.leaderboard(api.current_tournament())
-```
-
-See the [Raw client reference](python-client.md) for every object-oriented
-method, or the [raw endpoint catalog](endpoints.md) for direct HTTP use.
+    PGA TOUR does not document or support these endpoints. Routes and fields can change without notice. This project is independent and is not affiliated with or endorsed by PGA TOUR. Use responsibly, cache historical data, and follow the site's terms and robots.txt.
