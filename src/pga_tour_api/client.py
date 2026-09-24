@@ -2246,3 +2246,44 @@ def pga_all_time_records(record_id: str, tour: str = "R") -> pd.DataFrame:
     result.attrs.update({k: v for k, v in payload.items() if k != "rows"})
     result.attrs["tour"] = tour
     return result
+
+
+def pga_player_comparison(player_ids: list[str], category: str = "SCORING",
+                           year: int | None = None, tour: str = "R",
+                           tournament_id: str | None = None) -> pd.DataFrame:
+    """Compare players using PGA TOUR's season/category comparison table.
+
+    Returns one row per statistic and player. Display values remain strings;
+    ranking and highlighting metadata are preserved.
+    """
+    _validate_tour(tour)
+    if not player_ids:
+        raise ValueError("player_ids must contain at least one player")
+    data = graphql_request("PlayerComparison", {
+        "tourCode": tour, "playerIds": player_ids, "category": category,
+        "year": year, "tournamentId": tournament_id})
+    comparison = data.get("playerComparison") or {}
+    table = comparison.get("table") or {}
+    players = table.get("headerRow") or []
+    rows = []
+    for stat in table.get("rows") or []:
+        for index, value in enumerate(stat.get("values") or []):
+            player = players[index] if index < len(players) else {}
+            rows.append({
+                "stat_name": stat.get("statName"), "stat_id": stat.get("statId"),
+                "player_id": player.get("playerId"),
+                "player_name": player.get("displayText"),
+                "country": player.get("country"),
+                "year_data": player.get("yearData"),
+                "display_value": value.get("displayValue"),
+                "bold": value.get("bold"),
+                "rank_deviation": value.get("rankDeviation"),
+                "rank": value.get("rank"),
+            })
+    result = pd.DataFrame(rows, columns=["stat_name", "stat_id", "player_id",
+        "player_name", "country", "year_data", "display_value", "bold",
+        "rank_deviation", "rank"])
+    result.attrs.update({"tour": tour, "category": comparison.get("category"),
+                         "year": comparison.get("year"), "header": table.get("header"),
+                         "tournament_id": tournament_id})
+    return result

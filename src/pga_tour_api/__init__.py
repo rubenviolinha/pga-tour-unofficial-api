@@ -15,6 +15,7 @@ from .client import (
     pga_course_stats_details,
     pga_record_catalog,
     pga_all_time_records,
+    pga_player_comparison,
     pga_content,
     pga_course_stats,
     pga_course_stats_overview,
@@ -58,7 +59,7 @@ from .client import (
 from .raw import PgaApi, PgaApiError
 from .stat_ids import STAT_IDS
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 __all__ = [
     "PgaApi",
@@ -69,6 +70,7 @@ __all__ = [
     "pga_course_stats_details",
     "pga_record_catalog",
     "pga_all_time_records",
+    "pga_player_comparison",
     "pga_content",
     "pga_course_stats",
     "pga_course_stats_overview",

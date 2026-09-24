@@ -504,3 +504,11 @@ class PgaApi:
         """Return one all-time record table, unchanged from the source."""
         return self._root("AllTimeRecordStat",
             {"tourCode": tour, "recordId": record_id}, "allTimeRecordStat")
+
+    def player_comparison(self, player_ids: list[str], category: str = "SCORING",
+                          year: int | None = None, tour: str = "R",
+                          tournament_id: str | None = None) -> Any:
+        """Return the PGA TOUR season/category player comparison table."""
+        return self._root("PlayerComparison", {
+            "tourCode": tour, "playerIds": player_ids, "category": category,
+            "year": year, "tournamentId": tournament_id}, "playerComparison")

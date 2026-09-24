@@ -15,3 +15,5 @@ The raw client also exposes `scorecard_stats(tournament_id, player_id)`,
 `course_stats_details(query_type="TOUGHEST_COURSE", year=None, tour="R", round="ALL")`,
 `record_catalog(tour="R")`, and `all_time_records(record_id, tour="R")`.
 These preserve upstream structures; scorecard statistics are automatically decompressed.
+
+The raw client also exposes `player_comparison(player_ids, category="SCORING", year=None, tour="R", tournament_id=None)`, returning the PGA comparison table unchanged.

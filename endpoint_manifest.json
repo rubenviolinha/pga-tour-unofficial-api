@@ -376,6 +376,16 @@
       "query_file": "graphql/AllTimeRecordStat.graphql",
       "compressed": false,
       "verified_at": "2026-09-24"
+    },
+    {
+      "transport": "graphql",
+      "method": "POST",
+      "operation": "PlayerComparison",
+      "variables": "tourCode: TourCode!, playerIds: [String!]!, category: PlayerComparisonCategory, year: Int, tournamentId: String",
+      "root_field": "playerComparison",
+      "query_file": "graphql/PlayerComparison.graphql",
+      "compressed": false,
+      "verified_at": "2026-09-24"
     }
   ]
-}
+}\n

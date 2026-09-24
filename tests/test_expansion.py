@@ -88,3 +88,21 @@ def test_raw(monkeypatch, method, args, operation, root):
         return {root: {"example": True}}
     monkeypatch.setattr(api, "graphql", request)
     assert getattr(api, method)(*args) == {"example": True}
+
+
+def test_player_comparison(mock_graphql):
+    mock_graphql({"playerComparison": {"category": "SCORING", "year": 2026,
+        "table": {"header": "Scoring", "headerRow": [
+            {"playerId": "001", "displayText": "A", "country": "USA", "yearData": True},
+            {"playerId": "002", "displayText": "B", "country": "GBR", "yearData": False}],
+            "rows": [{"statName": "Scoring Average", "statId": "120", "values": [
+                {"displayValue": "69.1", "bold": True, "rankDeviation": .9, "rank": "1st"},
+                {"displayValue": "70.2", "bold": False, "rankDeviation": .2, "rank": "2nd"}]}]}}})
+    df = p.pga_player_comparison(["001", "002"], year=2026)
+    assert len(df) == 2
+    assert list(df.player_id) == ["001", "002"]
+    assert df.attrs["header"] == "Scoring"
+
+def test_player_comparison_empty(mock_graphql):
+    mock_graphql({})
+    assert p.pga_player_comparison(["001"]).empty

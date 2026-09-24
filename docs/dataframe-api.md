@@ -122,3 +122,12 @@ Missing data produces an empty table; mismatched headers raise PgaTourError.
 ::: pga_tour_api.pga_record_catalog
 
 ::: pga_tour_api.pga_all_time_records
+
+
+### Season player comparisons
+
+```python
+comparison = pga.player_comparison(["59095", "34046"], year=2026, category="SCORING")
+```
+
+::: pga_tour_api.pga_player_comparison
