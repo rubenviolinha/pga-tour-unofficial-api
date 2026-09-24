@@ -2,14 +2,15 @@
 
 Research date: **2026-09-24**. These additions were discovered by inspecting
 public PGA TOUR pages and their shipped query documents, then making selected
-live requests. They are **not yet implemented in this package** and do not
-increase its current operation or function counts.
+live requests. The first three priorities are now **implemented in version 0.3.0**:
+scorecard statistics, course/hole rankings and all-time records. Remaining
+items are research candidates, not implemented features.
 
 ## Live-verified additions
 
 | Priority | Addition | Evidence from this investigation | Proposed package support |
 |---|---|---|---|
-| 1 | Player tournament performance statistics | `ScorecardStatsV3Compressed` returned and decoded player `59095`'s statistics for event `R2026030`, including strokes gained, ranks, and year-to-date comparisons. | A raw method and a normalized table of player statistics by round and category. |
+| Delivered | Player tournament performance statistics | `ScorecardStatsV3Compressed` returned and decoded player `59095`'s statistics for event `R2026030`, including strokes gained, ranks, and year-to-date comparisons. | A raw method and a normalized table of player statistics by round and category. |
 | 1 | Full course and hole rankings | `CourseStatsDetails` returned 41 courses for `TOUGHEST_COURSE` and 738 holes for `TOUGHEST_HOLES`, using tour `R`, year `2026`, and round `ALL`. Season selectors extended back to 2008. | Full ranking tables with season, round, and ranking-type filters, beyond the existing overview. |
 | 1 | All-time records | `AllTimeRecordCategories` returned 282 distinct record IDs across 13 categories. `AllTimeRecordStat` returned 86 rows for record `2-1-11` (lowest 18-hole score). | A separate searchable record catalogue and record-detail function. These IDs are distinct from the 467 season-stat IDs. |
 | 2 | Season-level player comparisons | `PlayerComparison` returned a comparison table for players `59095` and `34046`, tour `R`, year `2026`, category `SCORING`. | Player comparisons by year and category, beyond the existing tournament scorecard comparison. |

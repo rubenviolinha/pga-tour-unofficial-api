@@ -8,3 +8,10 @@ normalized pandas DataFrames.
 ::: pga_tour_api.PgaApi
 
 ::: pga_tour_api.PgaApiError
+
+## Detailed statistics and records
+
+The raw client also exposes `scorecard_stats(tournament_id, player_id)`,
+`course_stats_details(query_type="TOUGHEST_COURSE", year=None, tour="R", round="ALL")`,
+`record_catalog(tour="R")`, and `all_time_records(record_id, tour="R")`.
+These preserve upstream structures; scorecard statistics are automatically decompressed.

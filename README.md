@@ -11,21 +11,21 @@ publish a compatibility contract, and several large responses are compressed.
 
 ## What is included
 
-- 28 complete GraphQL query documents in [`graphql/`](graphql/)
+- 32 complete GraphQL query documents in [`graphql/`](graphql/)
 - REST and configuration routes
-- 39 convenience functions: 32 return pandas DataFrames; seven return a string, dictionary, or raw JSON
+- 43 convenience functions: 36 return pandas DataFrames; seven return a string, dictionary, or raw JSON
 - A raw object-oriented client preserving upstream response structures
 - A machine-readable endpoint manifest
 - An importable catalog and CSV lookup of 467 PGA TOUR stat IDs
 - A live validation report covering 38 useful operations
-- 43 offline fixtures and 88 automated tests
+- 43 offline fixtures and 106 automated tests
 - Cross-platform CI for Python 3.9–3.13
 
 See [`ENDPOINTS.md`](ENDPOINTS.md) for the route catalog and variable shapes.
 
 See the [expansion roadmap](docs/roadmap.md) for additional data discovered on
 the PGA TOUR website, live verification results, and proposed implementation
-priorities. Roadmap items are not yet included in the package.
+priorities. The first three priorities are implemented; later items remain planned.
 
 ## Service map
 

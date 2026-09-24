@@ -32,7 +32,7 @@ function initializeStatsCatalog() {
       row.hidden = !matches;
       if (matches) count++;
     });
-    root.querySelector('[data-count]').textContent = `${count} of ${rows.length} statistics`;
+    root.querySelector('[data-count]').textContent = `${count} of ${rows.length} ${root.dataset.itemLabel || 'statistics'}`;
     root.querySelector('[data-empty]').hidden = count > 0;
   }
   updateSubcategories();

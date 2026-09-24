@@ -2116,3 +2116,133 @@ def pga_player_odds(tournament_id: str, player_id: str) -> pd.DataFrame:
     if not rows:
         return pd.DataFrame()
     return pd.DataFrame(rows)
+
+
+def pga_scorecard_stats(tournament_id: str, player_id: str, round: str | None = None) -> pd.DataFrame:
+    """Return player tournament statistics, one row per round, section and stat.
+
+    Args:
+        tournament_id: Event ID, e.g. R2026030.
+        player_id: String player ID, preserving leading zeroes.
+        round: Optional round filter; "-1" selects the tournament aggregate.
+
+    Returns:
+        DataFrame containing performance, scoring and strokes-gained sections.
+        Display values remain strings; numeric graph fields are preserved separately.
+    """
+    data = graphql_request("ScorecardStatsV3Compressed", {
+        "scorecardStatsV3CompressedId": tournament_id, "playerId": player_id})
+    payload = _safe_get(data, "scorecardStatsV3Compressed", "payload")
+    parsed = decompress_payload(payload) if payload else {}
+    columns = ["tournament_id", "player_id", "round", "round_name", "round_status",
+               "section", "stat_id", "label", "short_label", "total", "rank",
+               "year_to_date", "total_num", "year_to_date_num", "graph"]
+    rows = []
+    for item in parsed.get("rounds", []) or []:
+        if round is not None and str(item.get("round")) != str(round):
+            continue
+        for section in ("performance", "scoring", "strokesGained"):
+            for stat in item.get(section, []) or []:
+                row = dict(zip(columns[:6], [tournament_id, player_id,
+                    item.get("round"), item.get("displayName"), item.get("roundStatus"), section]))
+                for key, upstream in zip(columns[6:], ["statId", "label", "shortLabel",
+                        "total", "rank", "yearToDate", "totalNum", "yearToDateNum", "graph"]):
+                    row[key] = stat.get(upstream)
+                rows.append(row)
+    result = pd.DataFrame(rows, columns=columns)
+    result.attrs["id"] = parsed.get("id")
+    return result
+
+
+def pga_course_stats_details(query_type: str = "TOUGHEST_COURSE",
+                            year: int | None = None, tour: str = "R",
+                            round: str = "ALL") -> pd.DataFrame:
+    """Return complete course or hole rankings.
+
+    Args:
+        query_type: TOUGHEST_COURSE or TOUGHEST_HOLES.
+        year: Season; None uses the upstream default.
+        tour: Tour code R, S, H or Y; availability varies.
+        round: Upstream round selector; ALL combines rounds.
+
+    Returns:
+        Ranking table with display values and matching *_tendency columns.
+        Original headers, season/round selectors and other metadata are in attrs.
+        Duplicate PAR headers become par and par_1; +/- becomes to_par.
+    """
+    _validate_tour(tour)
+    if query_type not in {"TOUGHEST_COURSE", "TOUGHEST_HOLES"}:
+        raise ValueError("query_type must be TOUGHEST_COURSE or TOUGHEST_HOLES")
+    data = graphql_request("CourseStatsDetails", {
+        "tourCode": tour, "queryType": query_type, "year": year, "round": round})
+    payload = data.get("courseStatsDetails") or {}
+    headers = payload.get("headers") or []
+    names = make_unique_snake(["to_par" if h == "+/-" else h for h in headers])
+    columns = ["rank", "display_name", "tournament_id", "tournament_name"]
+    columns += [c for name in names for c in (name, name + "_tendency")]
+    rows = []
+    for item in payload.get("rows") or []:
+        values = item.get("values") or []
+        if len(values) != len(names):
+            raise PgaTourError("Course ranking headers and values have different lengths")
+        row = dict(zip(columns[:4], [item.get(k) for k in
+                    ("rank", "displayName", "tournamentId", "tournamentName")]))
+        for name, value in zip(names, values):
+            row[name] = value.get("value")
+            row[name + "_tendency"] = value.get("tendency")
+        rows.append(row)
+    result = pd.DataFrame(rows, columns=columns)
+    result.attrs.update({k: v for k, v in payload.items() if k != "rows"})
+    result.attrs["query_type"] = query_type
+    return result
+
+
+def pga_record_catalog(tour: str = "R") -> pd.DataFrame:
+    """Return the live all-time record catalogue, separate from STAT_IDS.
+
+    Args:
+        tour: Tour code R, S, H or Y; availability varies.
+
+    Returns:
+        DataFrame with record_id, record_name, category_id, category, subcategory.
+    """
+    _validate_tour(tour)
+    data = graphql_request("AllTimeRecordCategories", {"tourCode": tour})
+    payload = data.get("allTimeRecordCategories") or {}
+    rows = []
+    for category in payload.get("categories") or []:
+        for sub in category.get("subCategories") or []:
+            for stat in sub.get("statistics") or []:
+                rows.append([stat.get("recordId"), stat.get("displayText"),
+                    category.get("categoryId"), category.get("displayText"), sub.get("displayText")])
+    result = pd.DataFrame(rows, columns=["record_id", "record_name", "category_id", "category", "subcategory"])
+    result.attrs["tour"] = tour
+    return result
+
+
+def pga_all_time_records(record_id: str, tour: str = "R") -> pd.DataFrame:
+    """Return an all-time record table, preserving the source's display values.
+
+    Args:
+        record_id: ID from pga_record_catalog, e.g. "2-1-11".
+        tour: Tour code R, S, H or Y; availability varies.
+
+    Returns:
+        DataFrame with player_id and normalized upstream headers. Metadata,
+        original headers and primaryColumnIndex are retained in attrs.
+        Source entries may contain anomalies; this is not independent validation.
+    """
+    _validate_tour(tour)
+    data = graphql_request("AllTimeRecordStat", {"tourCode": tour, "recordId": record_id})
+    payload = data.get("allTimeRecordStat") or {}
+    names = make_unique_snake(["player_id"] + (payload.get("statHeaders") or []))
+    rows = []
+    for item in payload.get("rows") or []:
+        values = item.get("values") or []
+        if len(values) != len(names) - 1:
+            raise PgaTourError("Record headers and values have different lengths")
+        rows.append([item.get("playerId")] + values)
+    result = pd.DataFrame(rows, columns=names)
+    result.attrs.update({k: v for k, v in payload.items() if k != "rows"})
+    result.attrs["tour"] = tour
+    return result

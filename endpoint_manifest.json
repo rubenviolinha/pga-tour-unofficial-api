@@ -336,6 +336,46 @@
       "method": "GET",
       "path": "/content/watch/speedRounds/{tour}",
       "description": "Speed-round videos"
+    },
+    {
+      "transport": "graphql",
+      "method": "POST",
+      "operation": "ScorecardStatsV3Compressed",
+      "variables": "$scorecardStatsV3CompressedId: ID!, $playerId: ID!",
+      "root_field": "scorecardStatsV3Compressed",
+      "query_file": "graphql/ScorecardStatsV3Compressed.graphql",
+      "compressed": true,
+      "verified_at": "2026-09-24"
+    },
+    {
+      "transport": "graphql",
+      "method": "POST",
+      "operation": "CourseStatsDetails",
+      "variables": "$tourCode: TourCode! $queryType: CourseStatsId! $round: ToughestRound $year: Int",
+      "root_field": "courseStatsDetails",
+      "query_file": "graphql/CourseStatsDetails.graphql",
+      "compressed": false,
+      "verified_at": "2026-09-24"
+    },
+    {
+      "transport": "graphql",
+      "method": "POST",
+      "operation": "AllTimeRecordCategories",
+      "variables": "$tourCode: TourCode!",
+      "root_field": "allTimeRecordCategories",
+      "query_file": "graphql/AllTimeRecordCategories.graphql",
+      "compressed": false,
+      "verified_at": "2026-09-24"
+    },
+    {
+      "transport": "graphql",
+      "method": "POST",
+      "operation": "AllTimeRecordStat",
+      "variables": "$tourCode: TourCode!, $recordId: String!",
+      "root_field": "allTimeRecordStat",
+      "query_file": "graphql/AllTimeRecordStat.graphql",
+      "compressed": false,
+      "verified_at": "2026-09-24"
     }
   ]
 }

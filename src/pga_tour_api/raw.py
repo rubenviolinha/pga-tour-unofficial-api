@@ -479,3 +479,28 @@ class PgaApi:
             {"path": path},
             "genericContentCompressed",
         )
+
+
+    def scorecard_stats(self, tournament_id: str, player_id: str) -> Any:
+        """Return decoded player tournament statistics, including every round."""
+        return self._compressed("ScorecardStatsV3Compressed",
+            {"scorecardStatsV3CompressedId": tournament_id, "playerId": player_id},
+            "scorecardStatsV3Compressed")
+
+    def course_stats_details(self, query_type: str = "TOUGHEST_COURSE",
+                             year: int | None = None, tour: str = "R",
+                             round: str = "ALL") -> Any:
+        """Return the full course/hole ranking table and selector metadata."""
+        return self._root("CourseStatsDetails",
+            {"tourCode": tour, "queryType": query_type, "year": year, "round": round},
+            "courseStatsDetails")
+
+    def record_catalog(self, tour: str = "R") -> Any:
+        """Return the hierarchical all-time record catalogue."""
+        return self._root("AllTimeRecordCategories", {"tourCode": tour},
+                          "allTimeRecordCategories")
+
+    def all_time_records(self, record_id: str, tour: str = "R") -> Any:
+        """Return one all-time record table, unchanged from the source."""
+        return self._root("AllTimeRecordStat",
+            {"tourCode": tour, "recordId": record_id}, "allTimeRecordStat")

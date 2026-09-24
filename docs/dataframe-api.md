@@ -91,3 +91,34 @@
 ## Errors
 
 ::: pga_tour_api.PgaTourError
+
+## Records and detailed performance
+
+Added on 2026-09-24: four functions and four GraphQL operations. These are
+unofficial upstream data, not independently validated records.
+
+```python
+import pga_tour_api as pga
+
+stats = pga.pga_scorecard_stats("R2026030", "59095", round="-1")
+courses = pga.pga_course_stats_details(year=2026)
+holes = pga.pga_course_stats_details("TOUGHEST_HOLES", year=2026, round="ONE")
+catalog = pga.pga_record_catalog()
+records = pga.pga_all_time_records("2-1-11")
+```
+
+Scorecard sections are performance, scoring and strokesGained; the same stat
+can appear in more than one section. Round "-1" is the aggregate. Course round
+selectors are ALL, ONE, TWO, THREE and FOUR. Availability varies by tour and season.
+Display values remain strings; identifiers retain leading zeroes. Table metadata
+and original headers are available through `DataFrame.attrs`.
+Course duplicate headers are disambiguated (par/par_1 and dbl_bogey/dbl_bogey_1).
+Missing data produces an empty table; mismatched headers raise PgaTourError.
+
+::: pga_tour_api.pga_scorecard_stats
+
+::: pga_tour_api.pga_course_stats_details
+
+::: pga_tour_api.pga_record_catalog
+
+::: pga_tour_api.pga_all_time_records

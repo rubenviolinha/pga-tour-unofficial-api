@@ -1,0 +1,90 @@
+"""Offline regression tests for the September expansion."""
+import pytest
+import pga_tour_api as p
+from tests.conftest import compress_payload
+
+@pytest.mark.parametrize("fn,args", [
+    (p.pga_scorecard_stats, ("R2026030", "001")),
+    (p.pga_course_stats_details, ()),
+    (p.pga_record_catalog, ()),
+    (p.pga_all_time_records, ("2-1-11",)),
+])
+def test_empty(mock_graphql, fn, args):
+    mock_graphql({})
+    assert fn(*args).empty
+
+def test_scorecard_sections(mock_graphql):
+    mock_graphql({"scorecardStatsV3Compressed": {"payload": compress_payload({
+        "id": "event-player", "rounds": [
+            {"round": "-1", "performance": [{"statId": "02675", "total": "2.0"}],
+             "scoring": [{"statId": "106", "total": "1"}],
+             "strokesGained": [{"statId": "02675", "totalNum": 2.0}]},
+            {"round": "1", "performance": [{"statId": "02675", "total": "1.0"}]}]})}})
+    df = p.pga_scorecard_stats("event", "001", round="-1")
+    assert len(df) == 3
+    assert df.iloc[0].stat_id == "02675"
+    assert df.iloc[0].player_id == "001"
+    assert df.iloc[2].total_num == 2.0
+    assert df.attrs["id"] == "event-player"
+
+def test_course_headers(mock_graphql):
+    mock_graphql({"courseStatsDetails": {"headers": ["PAR", "+/-", "PAR"],
+        "round": "ONE", "rows": [{"rank": 1, "values": [
+            {"value": "72"}, {"value": "+1", "tendency": "ABOVE"}, {"value": "100"}]}]}})
+    df = p.pga_course_stats_details(round="ONE")
+    assert df.iloc[0].par == "72"
+    assert df.iloc[0].par_1 == "100"
+    assert df.iloc[0].to_par_tendency == "ABOVE"
+    assert df.attrs["round"] == "ONE"
+
+def test_catalog(mock_graphql):
+    mock_graphql({"allTimeRecordCategories": {"categories": [
+        {"categoryId": "SCORING", "displayText": "Scoring", "subCategories": [
+            {"displayText": "Rounds", "statistics": [
+                {"recordId": "2-1-11", "displayText": "Lowest"}]}]}]}})
+    df = p.pga_record_catalog()
+    assert df.iloc[0].record_id == "2-1-11"
+    assert df.iloc[0].subcategory == "Rounds"
+
+def test_records(mock_graphql):
+    mock_graphql({"allTimeRecordStat": {"statHeaders": ["Score", "Player"],
+        "primaryColumnIndex": 0, "rows": [{"playerId": "001", "values": ["58", "Example"]}]}})
+    df = p.pga_all_time_records("2-1-11")
+    assert df.iloc[0].player_id == "001"
+    assert df.iloc[0].score == "58"
+    assert df.attrs["primaryColumnIndex"] == 0
+
+@pytest.mark.parametrize("fn,args,response", [
+    (p.pga_course_stats_details, (), {"courseStatsDetails": {"headers": ["PAR"], "rows": [{"values": []}]}}),
+    (p.pga_all_time_records, ("x",), {"allTimeRecordStat": {"statHeaders": ["Score"], "rows": [{"values": []}]}}),
+])
+def test_mismatched_headers(mock_graphql, fn, args, response):
+    mock_graphql(response)
+    with pytest.raises(p.PgaTourError):
+        fn(*args)
+
+@pytest.mark.parametrize("fn,args", [(p.pga_course_stats_details, ()), (p.pga_record_catalog, ()), (p.pga_all_time_records, ("x",))])
+def test_invalid_tour(fn, args):
+    with pytest.raises(ValueError):
+        fn(*args, tour="INVALID")
+
+def test_invalid_ranking():
+    with pytest.raises(ValueError):
+        p.pga_course_stats_details("INVALID")
+
+@pytest.mark.parametrize("method,args,operation,root", [
+    ("scorecard_stats", ("event", "001"), "ScorecardStatsV3Compressed", "scorecardStatsV3Compressed"),
+    ("course_stats_details", (), "CourseStatsDetails", "courseStatsDetails"),
+    ("record_catalog", (), "AllTimeRecordCategories", "allTimeRecordCategories"),
+    ("all_time_records", ("2-1-11",), "AllTimeRecordStat", "allTimeRecordStat"),
+])
+def test_raw(monkeypatch, method, args, operation, root):
+    api = p.PgaApi()
+    def request(op, variables):
+        assert op == operation
+        if method == "scorecard_stats":
+            assert variables == {"scorecardStatsV3CompressedId": "event", "playerId": "001"}
+            return {root: {"payload": compress_payload({"example": True})}}
+        return {root: {"example": True}}
+    monkeypatch.setattr(api, "graphql", request)
+    assert getattr(api, method)(*args) == {"example": True}

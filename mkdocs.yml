@@ -37,6 +37,7 @@ nav:
   - Data guide:
       - Return schemas: data-models.md
       - Statistics catalog: stats-catalog.md
+      - Record catalog: record-catalog.md
       - Raw endpoints: endpoints.md
   - Validation: validation.md
   - Troubleshooting: troubleshooting.md

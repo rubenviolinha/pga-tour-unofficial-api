@@ -130,3 +130,15 @@ list of named stat values.
 The response contains tour/season metadata and `tournaments`. Event objects
 include tournament ID, name, date display fields, status, purse, champion,
 course/location, points, and event-site URL.
+
+## Additional operations (verified 2026-09-24)
+
+| Operation | Root | Variables | Compressed |
+|---|---|---|---|
+| ScorecardStatsV3Compressed | scorecardStatsV3Compressed | scorecardStatsV3CompressedId: ID!, playerId: ID! | Yes |
+| CourseStatsDetails | courseStatsDetails | tourCode: TourCode!, queryType: CourseStatsId!, round: ToughestRound, year: Int | No |
+| AllTimeRecordCategories | allTimeRecordCategories | tourCode: TourCode! | No |
+| AllTimeRecordStat | allTimeRecordStat | tourCode: TourCode!, recordId: String! | No |
+
+Course query types: TOUGHEST_COURSE and TOUGHEST_HOLES.
+Record IDs are a separate catalogue, not season-stat IDs.
