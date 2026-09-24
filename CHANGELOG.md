@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.5 — 2026-09-24
+
+- Add verified team-stroke-play leaderboard and cup team roster functions.
+- Keep match-play leaderboard as a raw documented operation pending a populated event verification.
+
 ## 0.3.3 — 2026-09-24
 
 - Add DP World Tour Race to Dubai PGA TOUR eligibility standings (ranking ID 2700).

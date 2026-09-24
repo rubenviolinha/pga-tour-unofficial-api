@@ -2388,3 +2388,40 @@ def pga_playoff_shot_details(tournament_id: str) -> pd.DataFrame:
     result.attrs["id"] = parsed.get("id")
     result.attrs["message"] = parsed.get("message")
     return result
+
+
+def pga_team_stroke_play_leaderboard(tournament_id: str) -> pd.DataFrame:
+    """Return team-stroke-play standings, including players and round scores."""
+    data = graphql_request("TeamStrokePlayLeaderboardCompressed",
+        {"teamStrokePlayLeaderboardCompressedId": tournament_id})
+    payload = _safe_get(data, "teamStrokePlayLeaderboardCompressed", "payload")
+    parsed = decompress_payload(payload) if payload else {}
+    rows = []
+    for team in parsed.get("leaderboard") or []:
+        for player in team.get("players") or [{}]:
+            rows.append({"tournament_id": tournament_id, "team_id": team.get("teamId"),
+                "team_name": team.get("teamName"), "position": team.get("position"),
+                "total": team.get("total"), "thru": team.get("thru"),
+                "rounds": team.get("rounds"), "player_id": player.get("id"),
+                "player_name": player.get("displayName"), "country": player.get("country")})
+    result = pd.DataFrame(rows)
+    result.attrs.update({k: v for k, v in parsed.items() if k != "leaderboard"})
+    return result
+
+
+def pga_cup_team_roster(tournament_id: str) -> pd.DataFrame:
+    """Return cup/team event rosters and player match results."""
+    data = graphql_request("CupTeamRoster", {"tournamentId": tournament_id})
+    payload = data.get("cupTeamRoster") or {}
+    rows = []
+    for team in payload.get("teams") or []:
+        for section in team.get("sections") or []:
+            for player in section.get("players") or []:
+                result = player.get("results") or {}
+                rows.append({"tournament_id": tournament_id, "team_id": team.get("teamId"),
+                    "team_name": team.get("teamName"), "section": section.get("sectionTitle"),
+                    "show_results": section.get("showResults"), "player_id": player.get("playerId"),
+                    "display_name": player.get("displayName"), "short_name": player.get("shortName"),
+                    "wins": result.get("wins"), "ties": result.get("ties"),
+                    "losses": result.get("losses"), "total": result.get("total")})
+    return pd.DataFrame(rows)

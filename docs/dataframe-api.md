@@ -153,6 +153,16 @@ while preserving the upstream message and ID in `DataFrame.attrs`.
 
 ::: pga_tour_api.pga_playoff_shot_details
 
+### Team events
+
+`pga_team_stroke_play_leaderboard(tournament_id)` returns team standings and
+player membership for team-stroke events. `pga_cup_team_roster(tournament_id)`
+returns cup teams, sections and player match results.
+
+::: pga_tour_api.pga_team_stroke_play_leaderboard
+
+::: pga_tour_api.pga_cup_team_roster
+
 
 ### Season player comparisons
 

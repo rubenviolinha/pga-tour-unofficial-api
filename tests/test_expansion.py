@@ -153,3 +153,13 @@ def test_playoff_empty_and_shots(mock_graphql):
         "id": "E-playoff", "message": "", "holes": [{"holeNumber": 18,
         "par": 4, "strokes": [{"strokeNumber": 1, "distance": "300"}]}]})}})
     assert p.pga_playoff_shot_details("E").iloc[0].stroke_number == 1
+
+def test_team_stroke_and_roster(mock_graphql):
+    mock_graphql({"teamStrokePlayLeaderboardCompressed": {"payload": compress_payload({
+        "leaderboard": [{"teamId": "T1", "teamName": "Team A/B", "position": "1",
+        "players": [{"id": "001", "displayName": "A"}]}]})}})
+    assert p.pga_team_stroke_play_leaderboard("E").iloc[0].team_id == "T1"
+    mock_graphql({"cupTeamRoster": {"teams": [{"teamId": "USA", "teamName": "United States",
+        "sections": [{"sectionTitle": "Players", "players": [{"playerId": "001",
+        "displayName": "A", "results": {"wins": 1}}]}]}]}})
+    assert p.pga_cup_team_roster("E").iloc[0].wins == 1

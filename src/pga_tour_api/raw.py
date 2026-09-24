@@ -496,6 +496,16 @@ class PgaApi:
         return self._compressed("PlayoffShotDetailsCompressed", {"tournamentId": tournament_id},
                                 "playoffShotDetailsCompressed")
 
+    def team_stroke_play_leaderboard(self, tournament_id: str) -> Any:
+        """Return decoded team-stroke-play standings."""
+        return self._compressed("TeamStrokePlayLeaderboardCompressed",
+            {"teamStrokePlayLeaderboardCompressedId": tournament_id},
+            "teamStrokePlayLeaderboardCompressed")
+
+    def cup_team_roster(self, tournament_id: str) -> Any:
+        """Return team/cup roster and player results."""
+        return self._root("CupTeamRoster", {"tournamentId": tournament_id}, "cupTeamRoster")
+
 
     def scorecard_stats(self, tournament_id: str, player_id: str) -> Any:
         """Return decoded player tournament statistics, including every round."""

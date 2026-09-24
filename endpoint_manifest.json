@@ -426,6 +426,37 @@
       "query_file": "graphql/PlayoffShotDetailsCompressed.graphql",
       "compressed": true,
       "verified_at": "2026-09-24"
+    },
+    {
+      "transport": "graphql",
+      "method": "POST",
+      "operation": "TeamStrokePlayLeaderboardCompressed",
+      "variables": "teamStrokePlayLeaderboardCompressedId: ID!",
+      "root_field": "teamStrokePlayLeaderboardCompressed",
+      "query_file": "graphql/TeamStrokePlayLeaderboardCompressed.graphql",
+      "compressed": true,
+      "verified_at": "2026-09-24"
+    },
+    {
+      "transport": "graphql",
+      "method": "POST",
+      "operation": "MatchPlayLeaderboardCompressed",
+      "variables": "matchPlayLeaderboardCompressedId: ID!",
+      "root_field": "matchPlayLeaderboardCompressed",
+      "query_file": "graphql/MatchPlayLeaderboardCompressed.graphql",
+      "compressed": true,
+      "verified_at": "2026-09-24",
+      "status": "raw operation; populated event not yet verified"
+    },
+    {
+      "transport": "graphql",
+      "method": "POST",
+      "operation": "CupTeamRoster",
+      "variables": "tournamentId: ID!",
+      "root_field": "cupTeamRoster",
+      "query_file": "graphql/CupTeamRoster.graphql",
+      "compressed": false,
+      "verified_at": "2026-09-24"
     }
   ]
 }
