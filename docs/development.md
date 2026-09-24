@@ -24,8 +24,8 @@ Every push and pull request runs the suite on:
 - Ubuntu and macOS
 - Python 3.9, 3.10, 3.11, 3.12, and 3.13
 
-The documentation workflow separately performs a strict build and saves the
-complete static site as a private artifact.
+The documentation workflow separately performs a strict build and publishes
+the static site to GitHub Pages.
 
 ## Adding an operation
 

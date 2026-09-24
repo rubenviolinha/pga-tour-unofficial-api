@@ -32,7 +32,7 @@ shots = pga.pga_shot_details(
 </div>
 
 <div class="trust-strip">
-  <span><b>28</b> GraphQL operations</span><span><b>39</b> DataFrame functions</span><span><b>467</b> stat IDs</span><span><b>4</b> tour codes</span>
+  <span><b>28</b> GraphQL operations</span><span><b>39</b> Python functions</span><span><b>467</b> stat IDs</span><span><b>4</b> tour codes</span>
 </div>
 
 ## Find your line
@@ -53,7 +53,7 @@ shots = pga.pga_shot_details(
 
 ## Two ways to work
 
-<div class="interface-row"><div><span class="path-index">THE FRIENDLY LAYER</span><h3>DataFrames for analysis</h3><p>Use the <code>pga_*</code> helpers for tidy pandas tables that drop straight into your research workflow.</p><a href="dataframe-api/">See the DataFrame API →</a></div><div><span class="path-index">THE RAW LAYER</span><h3>Responses as delivered</h3><p>Use <code>PgaApi</code> when you need the original response structure or want to work closer to the source.</p><a href="python-client/">See the raw client →</a></div></div>
+<div class="interface-row"><div><span class="path-index">THE FRIENDLY LAYER</span><h3>DataFrames for analysis</h3><p>Use the <code>pga_*</code> helpers for analysis. Most return tidy pandas tables; seven return a string, dictionary, or raw JSON.</p><a href="dataframe-api/">See the Python API →</a></div><div><span class="path-index">THE RAW LAYER</span><h3>Responses as delivered</h3><p>Use <code>PgaApi</code> when you need the original response structure or want to work closer to the source.</p><a href="python-client/">See the raw client →</a></div></div>
 
 !!! warning "Unofficial interface"
     PGA TOUR does not document or support these endpoints. Routes and fields can change without notice. This project is independent and is not affiliated with or endorsed by PGA TOUR. Use responsibly, cache historical data, and follow the site's terms and robots.txt.

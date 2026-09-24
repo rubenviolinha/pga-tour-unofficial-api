@@ -58,8 +58,14 @@ plugins:
             members_order: source
             docstring_style: google
 
+hooks:
+  - scripts/docs_catalog.py
+
+extra_javascript:
+  - assets/stats-catalog.js
 extra_css:
   - stylesheets/extra.css
+  - assets/stats-catalog.css
 
 markdown_extensions:
   - admonition

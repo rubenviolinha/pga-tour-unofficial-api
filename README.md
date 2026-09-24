@@ -13,7 +13,7 @@ publish a compatibility contract, and several large responses are compressed.
 
 - 28 complete GraphQL query documents in [`graphql/`](graphql/)
 - REST and configuration routes
-- A normalized pandas DataFrame API with 39 convenience functions
+- 39 convenience functions: 32 return pandas DataFrames; seven return a string, dictionary, or raw JSON
 - A raw object-oriented client preserving upstream response structures
 - A machine-readable endpoint manifest
 - An importable catalog and CSV lookup of 467 PGA TOUR stat IDs
@@ -50,7 +50,8 @@ players = pga.pga_players("R")
 sg_total = pga.pga_stats("02675", 2026, "R")
 ```
 
-These functions return normalized pandas DataFrames. For raw dictionaries:
+Most functions return normalized pandas DataFrames; the documented return type
+for each function is in the API reference. For upstream response structures:
 
 ```python
 from pga_tour_api import PgaApi
@@ -60,8 +61,8 @@ raw_leaderboard = api.leaderboard(api.current_tournament())
 ```
 
 The native documentation source lives in [`docs/`](docs/). GitHub Actions
-builds and stores a private site artifact on every push. Public GitHub Pages is
-intentionally not enabled while the repository remains private.
+builds and publishes the [documentation site](https://rubenviolinha.github.io/pga-tour-unofficial-api/)
+through GitHub Pages on every push to `main`.
 
 ## Direct GraphQL request
 

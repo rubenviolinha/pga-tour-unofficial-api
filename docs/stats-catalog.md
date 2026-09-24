@@ -1,7 +1,11 @@
 # Statistics catalog
 
-The package exports `STAT_IDS`, a searchable pandas DataFrame containing 467
-discovered stat IDs, names, categories, and subcategories.
+Browse the full catalog below. Search by name or ID, narrow by category and
+subcategory, then copy an ID to use in your query. Leading zeroes are preserved.
+
+[Browse all statistics](#full-catalog)
+
+The package also exports the catalog as the `STAT_IDS` pandas DataFrame.
 
 ```python
 import pga_tour_api as pga
@@ -31,6 +35,10 @@ Stat IDs are strings. Preserve leading zeroes such as `"02675"`.
 | `103` | Greens in Regulation Percentage |
 | `120` | Scoring Average (Adjusted) |
 | `130` | Scrambling |
+
+## Full catalog
+
+<!-- STATS_CATALOG -->
 
 The complete snapshot is also available as
 [`data/stat_ids.csv`](data/stat_ids.csv). To discover changes directly from the
