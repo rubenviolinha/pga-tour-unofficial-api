@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 <div class="landing-hero">
   <div class="hero-copy">
     <p class="eyebrow"><span class="live-dot"></span> OPEN DATA FIELD GUIDE · 2026</p>
