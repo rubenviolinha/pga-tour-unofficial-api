@@ -406,6 +406,26 @@
       "query_file": "graphql/UniversityTotalPoints.graphql",
       "compressed": false,
       "verified_at": "2026-09-24"
+    },
+    {
+      "transport": "graphql",
+      "method": "POST",
+      "operation": "PlayoffScorecardV3",
+      "variables": "tournamentId: ID!",
+      "root_field": "playoffScorecardV3",
+      "query_file": "graphql/PlayoffScorecardV3.graphql",
+      "compressed": false,
+      "verified_at": "2026-09-24"
+    },
+    {
+      "transport": "graphql",
+      "method": "POST",
+      "operation": "PlayoffShotDetailsCompressed",
+      "variables": "tournamentId: ID!",
+      "root_field": "playoffShotDetailsCompressed",
+      "query_file": "graphql/PlayoffShotDetailsCompressed.graphql",
+      "compressed": true,
+      "verified_at": "2026-09-24"
     }
   ]
 }

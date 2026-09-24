@@ -136,3 +136,20 @@ def test_dp_world_eligibility(mock_graphql):
     df = p.pga_dp_world_tour_eligibility(year=2026)
     assert df.iloc[0].player_id == "001"
     assert df.iloc[0].points == "123.4"
+
+def test_playoff_scorecard(mock_graphql):
+    mock_graphql({"playoffScorecardV3": {"playoffs": [{"id": "E", "courseName": "Course",
+        "playoffScoredType": "SUDDEN_DEATH", "playoff": {"players": [{
+            "active": True, "position": 1, "player": {"id": "001", "displayName": "A"},
+            "scores": [{"holeNumber": 18, "score": 4, "status": "OFFICIAL", "isTotal": False}]}]}}]}})
+    df = p.pga_playoff_scorecard("E")
+    assert df.iloc[0].player_id == "001"
+    assert df.iloc[0].hole_number == 18
+
+def test_playoff_empty_and_shots(mock_graphql):
+    mock_graphql({"playoffScorecardV3": {"playoffs": []}})
+    assert p.pga_playoff_scorecard("E").empty
+    mock_graphql({"playoffShotDetailsCompressed": {"payload": compress_payload({
+        "id": "E-playoff", "message": "", "holes": [{"holeNumber": 18,
+        "par": 4, "strokes": [{"strokeNumber": 1, "distance": "300"}]}]})}})
+    assert p.pga_playoff_shot_details("E").iloc[0].stroke_number == 1

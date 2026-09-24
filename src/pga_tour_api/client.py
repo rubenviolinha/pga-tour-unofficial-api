@@ -2345,3 +2345,46 @@ def pga_dp_world_tour_eligibility(year: int | None = None, tour: str = "R") -> p
     result.attrs.update({k: v for k, v in cup.items() if k not in {"officialPlayers", "projectedPlayers"}})
     result.attrs["ranking_id"] = "2700"
     return result
+
+
+def pga_playoff_scorecard(tournament_id: str) -> pd.DataFrame:
+    """Return playoff scorecard holes and player summaries for an event."""
+    data = graphql_request("PlayoffScorecardV3", {"tournamentId": tournament_id})
+    payload = data.get("playoffScorecardV3") or {}
+    rows = []
+    for playoff in payload.get("playoffs") or []:
+        detail = playoff.get("playoff") or {}
+        for player in detail.get("players") or []:
+            person = player.get("player") or {}
+            for score in player.get("scores") or []:
+                rows.append({"tournament_id": tournament_id, "playoff_id": playoff.get("id"),
+                    "course_name": playoff.get("courseName"), "scored_type": playoff.get("playoffScoredType"),
+                    "player_id": person.get("id"), "player_name": person.get("displayName"),
+                    "country": person.get("country"), "active": player.get("active"),
+                    "position": player.get("position"), "hole_number": score.get("holeNumber"),
+                    "score": score.get("score"), "status": score.get("status"),
+                    "is_total": score.get("isTotal")})
+    result = pd.DataFrame(rows)
+    result.attrs["payload"] = payload
+    return result
+
+
+def pga_playoff_shot_details(tournament_id: str) -> pd.DataFrame:
+    """Return decoded playoff shot-level data, one row per stroke."""
+    data = graphql_request("PlayoffShotDetailsCompressed", {"tournamentId": tournament_id})
+    payload = _safe_get(data, "playoffShotDetailsCompressed", "payload")
+    parsed = decompress_payload(payload) if payload else {}
+    rows = []
+    for hole in parsed.get("holes") or []:
+        for stroke in hole.get("strokes") or []:
+            rows.append({"tournament_id": tournament_id, "round": parsed.get("round"),
+                "player_id": stroke.get("playerId"), "hole_number": hole.get("holeNumber"),
+                "par": hole.get("par"), "hole_score": hole.get("score"),
+                "stroke_number": stroke.get("strokeNumber"), "distance": stroke.get("distance"),
+                "distance_remaining": stroke.get("distanceRemaining"),
+                "stroke_type": stroke.get("strokeType"), "from_location": stroke.get("fromLocation"),
+                "to_location": stroke.get("toLocation"), "play_by_play": stroke.get("playByPlay")})
+    result = pd.DataFrame(rows)
+    result.attrs["id"] = parsed.get("id")
+    result.attrs["message"] = parsed.get("message")
+    return result

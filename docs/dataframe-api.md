@@ -142,6 +142,17 @@ eligibility standings. The source metadata is retained in `DataFrame.attrs`.
 
 ::: pga_tour_api.pga_dp_world_tour_eligibility
 
+### Playoff data
+
+`pga_playoff_scorecard(tournament_id)` and `pga_playoff_shot_details(tournament_id)`
+wrap the PGA TOUR playoff-specific operations. A completed event may legitimately
+return an empty table when no playoff occurred; compressed shot payloads are decoded
+while preserving the upstream message and ID in `DataFrame.attrs`.
+
+::: pga_tour_api.pga_playoff_scorecard
+
+::: pga_tour_api.pga_playoff_shot_details
+
 
 ### Season player comparisons
 

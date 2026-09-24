@@ -11,9 +11,9 @@ publish a compatibility contract, and several large responses are compressed.
 
 ## What is included
 
-- 35 complete GraphQL query documents in [`graphql/`](graphql/)
+- 37 complete GraphQL query documents in [`graphql/`](graphql/)
 - REST and configuration routes
-- 47 convenience functions: 40 return pandas DataFrames; seven return a string, dictionary, or raw JSON
+- 49 convenience functions: 42 return pandas DataFrames; seven return a string, dictionary, or raw JSON
 - A raw object-oriented client preserving upstream response structures
 - A machine-readable endpoint manifest
 - An importable catalog and CSV lookup of 467 PGA TOUR stat IDs

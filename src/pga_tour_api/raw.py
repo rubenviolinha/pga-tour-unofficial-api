@@ -486,6 +486,16 @@ class PgaApi:
         return self._root("TourCupSplit", {"tourCode": tour, "id": "2700",
                           "year": year, "eventQuery": None}, "tourCupSplit")
 
+    def playoff_scorecard(self, tournament_id: str) -> Any:
+        """Return raw playoff scorecard summaries and hole scores."""
+        return self._root("PlayoffScorecardV3", {"tournamentId": tournament_id},
+                          "playoffScorecardV3")
+
+    def playoff_shot_details(self, tournament_id: str) -> Any:
+        """Return decoded playoff shot details."""
+        return self._compressed("PlayoffShotDetailsCompressed", {"tournamentId": tournament_id},
+                                "playoffShotDetailsCompressed")
+
 
     def scorecard_stats(self, tournament_id: str, player_id: str) -> Any:
         """Return decoded player tournament statistics, including every round."""
