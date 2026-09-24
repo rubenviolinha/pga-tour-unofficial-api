@@ -20,3 +20,6 @@ The raw client also exposes `player_comparison(player_ids, category="SCORING", y
 
 It also exposes `university_rankings(year=None, week=None)` and
 `university_total_points(season=None, week=None)`.
+
+`dp_world_tour_eligibility(year=None, tour="R")` returns the raw Race to Dubai
+eligibility standings.

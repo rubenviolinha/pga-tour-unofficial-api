@@ -128,3 +128,11 @@ def test_university_empty(mock_graphql):
     mock_graphql({})
     assert p.pga_university_rankings().empty
     assert p.pga_university_total_points().empty
+
+def test_dp_world_eligibility(mock_graphql):
+    mock_graphql({"tourCupSplit": {"title": "Race to Dubai", "officialPlayers": [
+        {"id": "001", "displayName": "A", "thisWeekRank": "1",
+         "pointData": {"official": "123.4"}}]}})
+    df = p.pga_dp_world_tour_eligibility(year=2026)
+    assert df.iloc[0].player_id == "001"
+    assert df.iloc[0].points == "123.4"

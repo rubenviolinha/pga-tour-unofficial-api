@@ -11,6 +11,7 @@ The module exposes two interfaces:
 
 from ._api import PgaTourError
 from .client import (
+    pga_dp_world_tour_eligibility,
     pga_scorecard_stats,
     pga_course_stats_details,
     pga_record_catalog,
@@ -61,9 +62,10 @@ from .client import (
 from .raw import PgaApi, PgaApiError
 from .stat_ids import STAT_IDS
 
-__version__ = "0.3.2"
+__version__ = "0.3.3"
 
 __all__ = [
+    "pga_dp_world_tour_eligibility",
     "PgaApi",
     "PgaApiError",
     "PgaTourError",

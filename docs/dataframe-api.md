@@ -134,6 +134,14 @@ navigation metadata in `DataFrame.attrs`.
 
 ::: pga_tour_api.pga_university_total_points
 
+### DP World Tour eligibility
+
+`pga_dp_world_tour_eligibility(year=None)` wraps the PGA site's existing
+`TourCupSplit` operation with ranking ID `2700` and returns Race to Dubai
+eligibility standings. The source metadata is retained in `DataFrame.attrs`.
+
+::: pga_tour_api.pga_dp_world_tour_eligibility
+
 
 ### Season player comparisons
 

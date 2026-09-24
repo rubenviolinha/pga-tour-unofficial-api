@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.3 — 2026-09-24
+
+- Add DP World Tour Race to Dubai PGA TOUR eligibility standings (ranking ID 2700).
+
 ## 0.3.2 — 2026-09-24
 
 - Add PGA TOUR University rankings and total-points operations with season/week filters.

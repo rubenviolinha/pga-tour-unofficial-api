@@ -480,6 +480,12 @@ class PgaApi:
             "genericContentCompressed",
         )
 
+    def dp_world_tour_eligibility(self, year: Optional[int] = None,
+                                  tour: str = "R") -> Any:
+        """Return raw DP World Tour Race to Dubai eligibility standings."""
+        return self._root("TourCupSplit", {"tourCode": tour, "id": "2700",
+                          "year": year, "eventQuery": None}, "tourCupSplit")
+
 
     def scorecard_stats(self, tournament_id: str, player_id: str) -> Any:
         """Return decoded player tournament statistics, including every round."""

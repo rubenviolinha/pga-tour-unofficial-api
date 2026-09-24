@@ -2326,3 +2326,22 @@ def pga_university_total_points(season: int | None = None,
     result.attrs.update({k: v for k, v in payload.items() if k != "players"})
     result.attrs["headers"] = headers
     return result
+
+
+def pga_dp_world_tour_eligibility(year: int | None = None, tour: str = "R") -> pd.DataFrame:
+    """Return DP World Tour Race to Dubai PGA TOUR eligibility standings."""
+    _validate_tour(tour)
+    data = graphql_request("TourCupSplit", {"tourCode": tour, "id": "2700", "year": year, "eventQuery": None})
+    cup = data.get("tourCupSplit") or {}
+    players = cup.get("officialPlayers") or cup.get("projectedPlayers") or []
+    rows = [{"player_id": p.get("id"), "display_name": p.get("displayName"),
+        "country": p.get("country"), "rank": p.get("thisWeekRank"),
+        "previous_rank": p.get("previousWeekRank"),
+        "movement": _safe_get(p, "rankingData", "movement"),
+        "movement_amount": _safe_get(p, "rankingData", "movementAmount"),
+        "points": _safe_get(p, "pointData", "official") or _safe_get(p, "pointData", "projected"),
+        "tour_bound": p.get("tourBound")} for p in players]
+    result = pd.DataFrame(rows)
+    result.attrs.update({k: v for k, v in cup.items() if k not in {"officialPlayers", "projectedPlayers"}})
+    result.attrs["ranking_id"] = "2700"
+    return result
