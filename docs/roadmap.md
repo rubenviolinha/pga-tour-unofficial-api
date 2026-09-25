@@ -1,28 +1,27 @@
 # Expansion roadmap
 
-Research date: **2026-09-24**. These additions were discovered by inspecting
+Research date: **2026-09-25**. These additions were discovered by inspecting
 public PGA TOUR pages and their shipped query documents, then making selected
-live requests. The first three priorities are now **implemented in version 0.3.0**:
-scorecard statistics, course/hole rankings and all-time records. Remaining
-items are research candidates, not implemented features.
+live requests. The delivered items below are implemented in the package;
+remaining rows are explicitly marked as upstream-dependent or unverified.
 
 ## Live-verified additions
 
 | Priority | Addition | Evidence from this investigation | Proposed package support |
 |---|---|---|---|
 | Delivered | Player tournament performance statistics | `ScorecardStatsV3Compressed` returned and decoded player `59095`'s statistics for event `R2026030`, including strokes gained, ranks, and year-to-date comparisons. | A raw method and a normalized table of player statistics by round and category. |
-| 1 | Full course and hole rankings | `CourseStatsDetails` returned 41 courses for `TOUGHEST_COURSE` and 738 holes for `TOUGHEST_HOLES`, using tour `R`, year `2026`, and round `ALL`. Season selectors extended back to 2008. | Full ranking tables with season, round, and ranking-type filters, beyond the existing overview. |
-| 1 | All-time records | `AllTimeRecordCategories` returned 282 distinct record IDs across 13 categories. `AllTimeRecordStat` returned 86 rows for record `2-1-11` (lowest 18-hole score). | A separate searchable record catalogue and record-detail function. These IDs are distinct from the 467 season-stat IDs. |
+| Delivered | Full course and hole rankings | `CourseStatsDetails` returned 41 courses for `TOUGHEST_COURSE` and 738 holes for `TOUGHEST_HOLES`, using tour `R`, year `2026`, and round `ALL`. Season selectors extended back to 2008. | Implemented as full ranking tables with season, round, and ranking-type filters. |
+| Delivered | All-time records | `AllTimeRecordCategories` returned 282 distinct record IDs across 13 categories. `AllTimeRecordStat` returned 86 rows for record `2-1-11` (lowest 18-hole score). | Implemented as a searchable record catalogue and record-detail function. These IDs are distinct from the 467 season-stat IDs. |
 | Delivered | Season-level player comparisons | `PlayerComparison` returned a comparison table for players `59095` and `34046`, tour `R`, year `2026`, category `SCORING`. | Player comparisons by year and category, beyond the existing tournament scorecard comparison. |
-| 2 | PGA TOUR University rankings | `UniversityRankings` returned 92 players for season `2027`, plus week/year selectors and player event results. | Ranking and event-result tables with year/week filters. |
-| 2 | PGA TOUR University total points | `UniversityTotalPoints` returned 24 players for season `2026`, with season/week navigation. | A separate qualification-points table. |
+| Delivered | PGA TOUR University rankings | `UniversityRankings` returned 92 players for season `2027`, plus week/year selectors and player event results. | Implemented as ranking and event-result tables with year/week filters. |
+| Delivered | PGA TOUR University total points | `UniversityTotalPoints` returned 24 players for season `2026`, with season/week navigation. | Implemented as a separate qualification-points table. |
 
 These are snapshot results, not fixed dataset sizes. One successful request
 does not establish coverage for every season, player, tour, or record ID.
 In particular, the 282-record catalogue was enumerated, but all 282 record
 detail calls were not individually tested.
 
-## Website data confirmed; direct API still to verify
+## Additional live-verified tour data
 
 - **DP World Tour eligibility rankings:** implemented via the verified
   `TourCupSplit` operation with ranking ID `2700`; the 2026 request returned 21
@@ -32,11 +31,11 @@ detail calls were not individually tested.
 
 | Area | Examples of discovered operations | Remaining work |
 |---|---|---|
-| Delivered / follow-up | `PlayoffScorecardV3`, `PlayoffShotDetailsCompressed` | Wrappers and populated/empty fixtures are implemented; find a completed event with actual playoff strokes for stronger live validation. |
+| Delivered / follow-up | `PlayoffScorecardV3`, `PlayoffShotDetailsCompressed` | Wrappers and populated/empty fixtures are implemented; a completed event with actual playoff strokes would provide stronger live validation. |
 | Delivered | `TeamStrokePlayLeaderboardCompressed`, `CupTeamRoster`, `MatchPlayLeaderboardCompressed` | Team-stroke, cup-roster and match-play wrappers are implemented and live-verified. Match play was verified on `R2023470` (2023 WGC-Dell Technologies Match Play), including knockout and group rounds. |
-| Historical odds | `HistoricalOdds`, `HistoricalTournamentsOdds` | Determine supported market values and historical availability. |
-| Editorial ranking tables | `GetPowerRankingsTable`, `GetExpertPicksTable` | Verify article paths and structured table responses. |
-| Leaderboard statistics/probabilities | `LeaderboardStats` | The default request for completed event `R2026030` returned type `PROBABILITY` with no players. Verify supported types against appropriate events before claiming coverage. |
+| Upstream-dependent | `HistoricalOdds`, `HistoricalTournamentsOdds` | Supported enum values are known, but tested events returned explicit “Odds are unavailable” responses; no normalized wrapper is claimed. |
+| Delivered | `GetPowerRankingsTable`, `GetExpertPicksTable` | Article content-fragment paths were verified with structured 15-row and five-row responses. |
+| Unverified / excluded | `LeaderboardStats` | The default request for completed event `R2026030` returned type `PROBABILITY` with no players; it remains outside the normalized surface until a populated event is found. |
 
 ### Historical odds verification note
 
@@ -48,17 +47,17 @@ message “Odds are unavailable” for tested completed events `R2025018` and
 `R2026030`, and current event `R2026500`. No normalized odds function is
 claimed until the upstream service supplies populated market data.
 
-## Delivery checklist
+## Delivery checklist for implemented additions
 
 For each addition:
 
-- [ ] Verify the complete request and relevant filters against live data.
-- [ ] Bundle the query document and any required fragments.
-- [ ] Add raw access and a normalized function where the response fits a table.
-- [ ] Preserve identifiers, season/round context, and response metadata.
-- [ ] Add representative fixtures and tests for populated and empty responses.
-- [ ] Document parameters, return columns, limitations, and a working example.
-- [ ] Update the endpoint manifest, changelog, and counts only after implementation.
+- [x] Verify the complete request and relevant filters against live data.
+- [x] Bundle the query document and any required fragments.
+- [x] Add raw access and a normalized function where the response fits a table.
+- [x] Preserve identifiers, season/round context, and response metadata.
+- [x] Add representative fixtures and tests for populated and empty responses.
+- [x] Document parameters, return columns, limitations, and a working example.
+- [x] Update the endpoint manifest, changelog, and counts only after implementation.
 
 ## Sources
 
