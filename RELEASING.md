@@ -5,9 +5,10 @@ publishing a package, confirm the checks below from a clean checkout:
 
 1. Run `python scripts/verify_surface.py` and confirm the documented counts.
 2. Run `pytest -q` and `mkdocs build --strict`.
-3. Update `CHANGELOG.md`, `docs/changelog.md`, and the version in `pyproject.toml`.
-4. Push the release commit and wait for both GitHub Actions workflows to pass.
-5. Only publish to PyPI after choosing a license and configuring a trusted
+3. Run `python -m build` and inspect the generated wheel and source archive.
+4. Update `CHANGELOG.md`, `docs/changelog.md`, and the version in `pyproject.toml`.
+5. Push the release commit and wait for the test, package and documentation workflows to pass.
+6. Only publish to PyPI after choosing a license and configuring a trusted
    publishing environment. The current package metadata is deliberately not a
    PyPI release configuration.
 
