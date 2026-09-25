@@ -38,6 +38,16 @@ detail calls were not individually tested.
 | Editorial ranking tables | `GetPowerRankingsTable`, `GetExpertPicksTable` | Verify article paths and structured table responses. |
 | Leaderboard statistics/probabilities | `LeaderboardStats` | The default request for completed event `R2026030` returned type `PROBABILITY` with no players. Verify supported types against appropriate events before claiming coverage. |
 
+### Historical odds verification note
+
+The service accepts `OddsMarketType` values `WINNER`, `GROUP_WINNER`,
+`NATIONALITY`, `PLAYER_PROPS`, `FINISHES` and `MATCHUP`, and `HistoricalOddsId`
+values `WINNER`, `TOP_RANKED_3`, `TOP_RANKED_5`, `TOP_RANKED_10` and
+`TOP_RANKED_20`. However, `HistoricalTournamentsOdds` returned the explicit
+message “Odds are unavailable” for tested completed events `R2025018` and
+`R2026030`, and current event `R2026500`. No normalized odds function is
+claimed until the upstream service supplies populated market data.
+
 ## Delivery checklist
 
 For each addition:
