@@ -6,6 +6,8 @@
   2023 WGC-Dell Technologies Match Play (`R2023470`).
 - Add an opt-in JSON response cache for completed and historical reads, with
   TTL controls, cache-failure isolation and offline tests.
+- Release the project-specific code under the MIT License and package the
+  third-party notices in both distribution formats.
 
 ## 0.3.6 — 2026-09-25
 

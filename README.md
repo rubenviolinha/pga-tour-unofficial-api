@@ -178,6 +178,15 @@ The fallback is less complete than GraphQL but often survives API migrations.
 - Live odds, coverage, videos, and player tournament status can correctly be
   empty outside their active window.
 
+## License
+
+The project-specific code is released under the [MIT License](LICENSE).
+Third-party material adapted from `pgatourPY` retains its separate notice in
+[`NOTICE.md`](NOTICE.md) and the original license text in
+[`LICENSES/pgatourPY-MIT.txt`](LICENSES/pgatourPY-MIT.txt). The license covers
+the software, not PGA TOUR trademarks, website content, or data-redistribution
+rights.
+
 ## Provenance
 
 The route inventory was verified against live PGA TOUR responses. The
