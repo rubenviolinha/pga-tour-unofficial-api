@@ -8,6 +8,7 @@ import json
 import os
 
 import pytest
+import httpx
 
 from pga_tour_api import _api
 from pga_tour_api._api import PgaTourError, _api_key, _is_verbose, decompress_payload
@@ -68,3 +69,37 @@ def test_decompress_valid_gzip_not_json():
     payload = base64.b64encode(gzip.compress(b"not-json")).decode()
     with pytest.raises(PgaTourError, match="parse"):
         decompress_payload(payload)
+
+
+def test_graphql_cache_is_opt_in(monkeypatch, tmp_path):
+    calls = []
+
+    def fake_request(method, url, *, json_body=None, context):
+        calls.append((method, url, json_body, context))
+        return httpx.Response(200, json={"data": {"value": len(calls)}})
+
+    monkeypatch.setenv("PGATOUR_CACHE_DIR", str(tmp_path))
+    monkeypatch.setattr(_api, "_request_with_retry", fake_request)
+
+    first = _api.graphql_request("StatDetails", {"statId": "02675"})
+    second = _api.graphql_request("StatDetails", {"statId": "02675"})
+
+    assert first == {"value": 1}
+    assert second == first
+    assert len(calls) == 1
+
+
+def test_cache_ttl_zero_bypasses_cache(monkeypatch, tmp_path):
+    calls = []
+
+    def fake_request(method, url, *, json_body=None, context):
+        calls.append(context)
+        return httpx.Response(200, json={"data": {"value": len(calls)}})
+
+    monkeypatch.setenv("PGATOUR_CACHE_DIR", str(tmp_path))
+    monkeypatch.setenv("PGATOUR_CACHE_TTL", "0")
+    monkeypatch.setattr(_api, "_request_with_retry", fake_request)
+
+    assert _api.graphql_request("StatDetails", {"statId": "02675"}) == {"value": 1}
+    assert _api.graphql_request("StatDetails", {"statId": "02675"}) == {"value": 2}
+    assert len(calls) == 2

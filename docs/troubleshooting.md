@@ -37,6 +37,19 @@ import logging
 logging.getLogger("pga_tour_api").setLevel(logging.DEBUG)
 ```
 
+## Cache completed or historical reads
+
+Caching is disabled unless explicitly enabled. To cache responses locally:
+
+```bash
+export PGATOUR_CACHE_DIR=".cache/pga-tour"
+export PGATOUR_CACHE_TTL="86400"
+```
+
+Set `PGATOUR_CACHE_TTL=0` to bypass the cache. The cache is keyed by operation,
+variables, and REST/config path; failed or malformed responses are never
+cached.
+
 ## Tournament IDs
 
 Use the full ID for most calls—for example, `R2026030`. Video queries can use a

@@ -9,6 +9,7 @@ from __future__ import annotations
 import base64
 import binascii
 import gzip
+import hashlib
 import json
 import logging
 import os
@@ -38,6 +39,7 @@ _MIN_INTERVAL = 0.1  # 10 req/s ceiling
 _last_request_time: float = 0.0
 
 logger = logging.getLogger("pga_tour_api")
+_CACHE_MISS = object()
 
 
 class PgaTourError(RuntimeError):
@@ -86,6 +88,52 @@ def _throttle() -> None:
     if elapsed < _MIN_INTERVAL:
         time.sleep(_MIN_INTERVAL - elapsed)
     _last_request_time = time.monotonic()
+
+
+def _cache_path(namespace: str, key: Any) -> Path | None:
+    """Return an opt-in cache path for a request, or ``None`` when disabled."""
+    root = os.environ.get("PGATOUR_CACHE_DIR")
+    if not root:
+        return None
+    digest = hashlib.sha256(
+        json.dumps(key, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    return Path(root).expanduser() / namespace / f"{digest}.json"
+
+
+def _cache_ttl() -> float:
+    raw = os.environ.get("PGATOUR_CACHE_TTL", "86400")
+    try:
+        return max(0.0, float(raw))
+    except ValueError:
+        logger.warning("invalid PGATOUR_CACHE_TTL=%r; using 86400 seconds", raw)
+        return 86400.0
+
+
+def _cache_read(namespace: str, key: Any) -> Any:
+    path = _cache_path(namespace, key)
+    if path is None or _cache_ttl() == 0:
+        return _CACHE_MISS
+    try:
+        if time.time() - path.stat().st_mtime > _cache_ttl():
+            return _CACHE_MISS
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError, json.JSONDecodeError):
+        return _CACHE_MISS
+
+
+def _cache_write(namespace: str, key: Any, value: Any) -> None:
+    path = _cache_path(namespace, key)
+    if path is None or _cache_ttl() == 0:
+        return
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+        temporary = path.with_suffix(".tmp")
+        temporary.write_text(json.dumps(value), encoding="utf-8")
+        temporary.replace(path)
+    except (OSError, TypeError, ValueError):
+        # Caching must never make a successful API call fail.
+        logger.debug("could not write cache entry %s", path, exc_info=True)
 
 
 def _request_with_retry(
@@ -159,6 +207,11 @@ def graphql_request(
         "variables": variables or {},
         "operationName": operation_name,
     }
+    cache_key = {"operation": operation_name, "variables": variables or {}}
+    cached = _cache_read("graphql", cache_key)
+    if cached is not _CACHE_MISS:
+        logger.debug("pga_tour_api graphql cache hit -> %s", operation_name)
+        return cached
     if _is_verbose():
         logger.info("pga_tour_api graphql -> %s vars=%s", operation_name, variables)
     else:
@@ -183,7 +236,9 @@ def graphql_request(
         )
         raise PgaTourError(f"PGA Tour GraphQL error ({operation_name}): {msgs}")
 
-    return body.get("data", {}) if isinstance(body, dict) else {}
+    result = body.get("data", {}) if isinstance(body, dict) else {}
+    _cache_write("graphql", cache_key, result)
+    return result
 
 
 def rest_request(path: str) -> Any:
@@ -195,6 +250,10 @@ def rest_request(path: str) -> Any:
         logger.debug("pga_tour_api rest -> %s", path)
 
     context = f"REST {path}"
+    cached = _cache_read("rest", path)
+    if cached is not _CACHE_MISS:
+        logger.debug("pga_tour_api rest cache hit -> %s", path)
+        return cached
     resp = _request_with_retry("GET", url, context=context)
 
     if resp.status_code >= 400:
@@ -203,7 +262,9 @@ def rest_request(path: str) -> Any:
             f"{context} failed (status={resp.status_code}): {snippet!r}"
         )
 
-    return _parse_json(resp, context)
+    result = _parse_json(resp, context)
+    _cache_write("rest", path, result)
+    return result
 
 
 def config_request(path: str) -> Any:
@@ -219,6 +280,10 @@ def config_request(path: str) -> Any:
         logger.debug("pga_tour_api config -> %s", path)
 
     context = f"CONFIG {path}"
+    cached = _cache_read("config", path)
+    if cached is not _CACHE_MISS:
+        logger.debug("pga_tour_api config cache hit -> %s", path)
+        return cached
     resp = _request_with_retry("GET", url, context=context)
 
     if resp.status_code >= 400:
@@ -227,7 +292,9 @@ def config_request(path: str) -> Any:
             f"{context} failed (status={resp.status_code}): {snippet!r}"
         )
 
-    return _parse_json(resp, context)
+    result = _parse_json(resp, context)
+    _cache_write("config", path, result)
+    return result
 
 
 def decompress_payload(payload: str) -> Any:

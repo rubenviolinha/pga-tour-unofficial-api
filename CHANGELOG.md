@@ -31,6 +31,19 @@ All notable changes to this project are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and versions follow
 [Semantic Versioning](https://semver.org/).
 
+## 0.3.7 — 2026-09-25
+
+- Add normalized match-play leaderboard support, live-verified against the 2023
+  WGC-Dell Technologies Match Play (`R2023470`).
+- Add an opt-in JSON response cache for completed and historical reads, with
+  TTL controls, cache-failure isolation and offline tests.
+
+## 0.3.6 — 2026-09-25
+
+- Add structured editorial Power Rankings and Expert Picks wrappers using
+  article content-fragment paths.
+- Verify live responses with 15 Power Rankings rows and five Expert Picks rows.
+
 ## [Unreleased]
 
 ### Planned

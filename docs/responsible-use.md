@@ -16,6 +16,15 @@ developer API.
   restrictions.
 - Do not treat an empty live-only result as an error outside the event window.
 
+### Optional local response cache
+
+The normalized client has an opt-in JSON response cache for completed or
+historical reads. Set `PGATOUR_CACHE_DIR` to a local directory; entries expire
+after 24 hours by default. Set `PGATOUR_CACHE_TTL` to a number of seconds, or
+`0` to bypass the cache. Do not use a long TTL for live leaderboards or other
+rapidly changing feeds, and do not place the cache directory in a public or
+shared location.
+
 ## Stability
 
 The public frontend key, GraphQL schema, compressed payload format, and endpoint
