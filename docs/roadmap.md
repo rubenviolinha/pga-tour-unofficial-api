@@ -32,8 +32,8 @@ detail calls were not individually tested.
 
 | Area | Examples of discovered operations | Remaining work |
 |---|---|---|
-| Playoffs | `PlayoffScorecardV3`, `PlayoffShotDetailsCompressed` | Test completed playoff events and decode the scorecard/shot structures. |
-| Team and match play | `TeamStrokePlayLeaderboardCompressed`, `MatchPlayLeaderboardCompressed`, `CupTeamRoster` | Verify suitable event IDs, scoring formats, rosters, and empty-result behavior. |
+| Delivered / follow-up | `PlayoffScorecardV3`, `PlayoffShotDetailsCompressed` | Wrappers and populated/empty fixtures are implemented; find a completed event with actual playoff strokes for stronger live validation. |
+| Partially delivered | `TeamStrokePlayLeaderboardCompressed`, `CupTeamRoster`, `MatchPlayLeaderboardCompressed` | Team-stroke and cup-roster wrappers are implemented and live-verified; find a populated match-play event before adding a normalized match-play function. |
 | Historical odds | `HistoricalOdds`, `HistoricalTournamentsOdds` | Determine supported market values and historical availability. |
 | Editorial ranking tables | `GetPowerRankingsTable`, `GetExpertPicksTable` | Verify article paths and structured table responses. |
 | Leaderboard statistics/probabilities | `LeaderboardStats` | The default request for completed event `R2026030` returned type `PROBABILITY` with no players. Verify supported types against appropriate events before claiming coverage. |
