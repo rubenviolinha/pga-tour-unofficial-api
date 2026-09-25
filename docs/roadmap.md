@@ -42,10 +42,12 @@ detail calls were not individually tested.
 The service accepts `OddsMarketType` values `WINNER`, `GROUP_WINNER`,
 `NATIONALITY`, `PLAYER_PROPS`, `FINISHES` and `MATCHUP`, and `HistoricalOddsId`
 values `WINNER`, `TOP_RANKED_3`, `TOP_RANKED_5`, `TOP_RANKED_10` and
-`TOP_RANKED_20`. However, `HistoricalTournamentsOdds` returned the explicit
-message “Odds are unavailable” for tested completed events `R2025018` and
-`R2026030`, and current event `R2026500`. No normalized odds function is
-claimed until the upstream service supplies populated market data.
+`TOP_RANKED_20`. The operation expects `tournamentId: String!` and
+`marketId: OddsMarketType!`. Requests for 11 current-season/completed IDs
+(including `R2025018`, `R2026030` and `R2026500`) across `WINNER`,
+`GROUP_WINNER` and `FINISHES` all returned a structured `FANDUEL` response
+with the explicit message “Odds are unavailable.” No normalized odds function
+is claimed until the upstream service supplies populated market data.
 
 ## Delivery checklist for implemented additions
 
