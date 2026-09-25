@@ -2409,6 +2409,57 @@ def pga_team_stroke_play_leaderboard(tournament_id: str) -> pd.DataFrame:
     return result
 
 
+def pga_match_play_leaderboard(tournament_id: str) -> pd.DataFrame:
+    """Return one row per player in each match-play match.
+
+    Round and bracket metadata are repeated on each player row, covering both
+    knockout brackets and round-robin groups. Upcoming matches are included
+    when the upstream feed provides them.
+    """
+    data = graphql_request("MatchPlayLeaderboardCompressed",
+        {"matchPlayLeaderboardCompressedId": tournament_id})
+    payload = _safe_get(data, "matchPlayLeaderboardCompressed", "payload")
+    parsed = decompress_payload(payload) if payload else {}
+    rows = []
+    for round_data in parsed.get("rounds") or []:
+        for bracket in round_data.get("brackets") or []:
+            for upcoming, matches_key in ((False, "matches"), (True, "upcomingMatches")):
+                for match in bracket.get(matches_key) or []:
+                    for player in match.get("players") or [{}]:
+                        rows.append({
+                            "tournament_id": tournament_id,
+                            "round": round_data.get("round"),
+                            "round_header": round_data.get("roundHeader"),
+                            "round_status_subhead": round_data.get("roundStatusSubHead"),
+                            "round_type_subhead": round_data.get("roundTypeSubHead"),
+                            "bracket_num": bracket.get("bracketNum"),
+                            "bracket_header": bracket.get("bracketHeader"),
+                            "match_id": match.get("matchId"),
+                            "match_status": match.get("matchStatus"),
+                            "match_score": match.get("matchScore"),
+                            "thru": match.get("thru"),
+                            "thru_number_of_holes": match.get("thruNumberOfHoles"),
+                            "tee_time": match.get("teeTime"),
+                            "bracket_player_swap": match.get("bracketPlayerSwap"),
+                            "upcoming": upcoming,
+                            "player_id": player.get("playerId"),
+                            "player_name": player.get("displayName"),
+                            "short_name": player.get("shortName"),
+                            "first_name": player.get("firstName"),
+                            "last_name": player.get("lastName"),
+                            "tournament_seed": player.get("tournamentSeed"),
+                            "bracket_seed": player.get("bracketSeed"),
+                            "player_match_status": player.get("matchStatus"),
+                            "country_flag": player.get("countryFlag"),
+                            "country_name": player.get("countryName"),
+                            "is_amateur": player.get("isAmateur"),
+                            "record": player.get("record"),
+                        })
+    result = pd.DataFrame(rows)
+    result.attrs.update({k: v for k, v in parsed.items() if k != "rounds"})
+    return result
+
+
 def pga_cup_team_roster(tournament_id: str) -> pd.DataFrame:
     """Return cup/team event rosters and player match results."""
     data = graphql_request("CupTeamRoster", {"tournamentId": tournament_id})

@@ -164,6 +164,23 @@ def test_team_stroke_and_roster(mock_graphql):
         "displayName": "A", "results": {"wins": 1}}]}]}]}})
     assert p.pga_cup_team_roster("E").iloc[0].wins == 1
 
+def test_match_play_leaderboard(mock_graphql):
+    mock_graphql({"matchPlayLeaderboardCompressed": {"payload": compress_payload({
+        "id": "E", "currentRound": 2, "formatType": "MATCH_PLAY",
+        "rounds": [{"round": 1, "roundHeader": "Round 1", "brackets": [{
+            "bracketNum": 1, "bracketHeader": "Bracket 1", "matches": [{
+                "matchId": "M1", "matchScore": "2 & 1", "thru": "FINAL",
+                "matchStatus": "COMPLETE", "players": [{
+                    "playerId": "001", "displayName": "A Player",
+                    "matchStatus": "WINNER", "countryName": "USA"}, {
+                    "playerId": "002", "displayName": "B Player",
+                    "matchStatus": "LOSER", "countryName": "ENG"}]}]}]}]})}})
+    df = p.pga_match_play_leaderboard("E")
+    assert len(df) == 2
+    assert df.iloc[0].match_id == "M1"
+    assert df.iloc[0].player_id == "001"
+    assert df.attrs["formatType"] == "MATCH_PLAY"
+
 def test_editorial_tables(mock_graphql):
     mock_graphql({"getPowerRankingsTable": {"tournamentName": "PGA Championship",
         "tableTitle": "Power Rankings", "powerRankingsTableRow": [

@@ -502,6 +502,12 @@ class PgaApi:
             {"teamStrokePlayLeaderboardCompressedId": tournament_id},
             "teamStrokePlayLeaderboardCompressed")
 
+    def match_play_leaderboard(self, tournament_id: str) -> Any:
+        """Return decoded match-play rounds, brackets, matches and players."""
+        return self._compressed("MatchPlayLeaderboardCompressed",
+            {"matchPlayLeaderboardCompressedId": tournament_id},
+            "matchPlayLeaderboardCompressed")
+
     def cup_team_roster(self, tournament_id: str) -> Any:
         """Return team/cup roster and player results."""
         return self._root("CupTeamRoster", {"tournamentId": tournament_id}, "cupTeamRoster")

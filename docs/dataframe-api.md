@@ -163,6 +163,14 @@ returns cup teams, sections and player match results.
 
 ::: pga_tour_api.pga_cup_team_roster
 
+`pga_match_play_leaderboard(tournament_id)` flattens the compressed match-play
+feed to one row per player per match. It preserves round, bracket/group,
+match score, status, tee time, seeds and country fields, and includes an
+`upcoming` flag for scheduled matches. For example, the 2023 WGC-Dell
+Technologies Match Play is available as `R2023470`.
+
+::: pga_tour_api.pga_match_play_leaderboard
+
 ### Editorial tables
 
 `pga_power_rankings(path)` and `pga_expert_picks(path)` consume the content

@@ -24,7 +24,7 @@ expected = {
     "root query documents": 42,
     "package query documents": 42,
     "manifest GraphQL operations": 42,
-    "exported convenience functions": 53,
+    "exported convenience functions": 54,
 }
 for label, actual in checks.items():
     print(f"{label}: {actual}")

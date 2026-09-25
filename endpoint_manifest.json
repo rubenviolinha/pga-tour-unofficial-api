@@ -446,7 +446,7 @@
       "query_file": "graphql/MatchPlayLeaderboardCompressed.graphql",
       "compressed": true,
       "verified_at": "2026-09-24",
-      "status": "raw operation; populated event not yet verified"
+      "status": "normalized wrapper live-verified on R2023470 (2023 WGC-Dell Technologies Match Play)"
     },
     {
       "transport": "graphql",
