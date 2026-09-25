@@ -16,6 +16,8 @@ from .client import (
     pga_playoff_shot_details,
     pga_team_stroke_play_leaderboard,
     pga_cup_team_roster,
+    pga_power_rankings,
+    pga_expert_picks,
     pga_scorecard_stats,
     pga_course_stats_details,
     pga_record_catalog,
@@ -66,7 +68,7 @@ from .client import (
 from .raw import PgaApi, PgaApiError
 from .stat_ids import STAT_IDS
 
-__version__ = "0.3.5"
+__version__ = "0.3.6"
 
 __all__ = [
     "pga_dp_world_tour_eligibility",
@@ -74,6 +76,8 @@ __all__ = [
     "pga_playoff_shot_details",
     "pga_team_stroke_play_leaderboard",
     "pga_cup_team_roster",
+    "pga_power_rankings",
+    "pga_expert_picks",
     "PgaApi",
     "PgaApiError",
     "PgaTourError",

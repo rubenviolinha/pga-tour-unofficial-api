@@ -163,6 +163,17 @@ returns cup teams, sections and player match results.
 
 ::: pga_tour_api.pga_cup_team_roster
 
+### Editorial tables
+
+`pga_power_rankings(path)` and `pga_expert_picks(path)` consume the content
+fragment path embedded in a PGA TOUR article, not the public article URL. The
+article page supplies paths such as `/content/dam/pga-tour/fragments/.../pr-table`.
+Nested lineups remain lists so the original editorial selection is preserved.
+
+::: pga_tour_api.pga_power_rankings
+
+::: pga_tour_api.pga_expert_picks
+
 
 ### Season player comparisons
 

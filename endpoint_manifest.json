@@ -457,6 +457,26 @@
       "query_file": "graphql/CupTeamRoster.graphql",
       "compressed": false,
       "verified_at": "2026-09-24"
+    },
+    {
+      "transport": "graphql",
+      "method": "POST",
+      "operation": "GetPowerRankingsTable",
+      "variables": "path: String!",
+      "root_field": "getPowerRankingsTable",
+      "query_file": "graphql/GetPowerRankingsTable.graphql",
+      "compressed": false,
+      "verified_at": "2026-09-25"
+    },
+    {
+      "transport": "graphql",
+      "method": "POST",
+      "operation": "GetExpertPicksTable",
+      "variables": "path: String!",
+      "root_field": "getExpertPicksTable",
+      "query_file": "graphql/GetExpertPicksTable.graphql",
+      "compressed": false,
+      "verified_at": "2026-09-25"
     }
   ]
 }

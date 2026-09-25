@@ -163,3 +163,16 @@ def test_team_stroke_and_roster(mock_graphql):
         "sections": [{"sectionTitle": "Players", "players": [{"playerId": "001",
         "displayName": "A", "results": {"wins": 1}}]}]}]}})
     assert p.pga_cup_team_roster("E").iloc[0].wins == 1
+
+def test_editorial_tables(mock_graphql):
+    mock_graphql({"getPowerRankingsTable": {"tournamentName": "PGA Championship",
+        "tableTitle": "Power Rankings", "powerRankingsTableRow": [
+        {"rank": 1, "player": {"id": "001", "firstName": "A", "lastName": "Player"}}]}})
+    df = p.pga_power_rankings("/content/dam/example/pr-table")
+    assert df.iloc[0].player_id == "001"
+    assert df.attrs["tournamentName"] == "PGA Championship"
+    mock_graphql({"getExpertPicksTable": {"tournamentName": "3M Open",
+        "expertPicksTableRows": [{"expertName": "Expert", "expertTitle": "Editor",
+        "lineup": [{"id": "001"}], "winner": {"id": "001", "firstName": "A", "lastName": "Player"}}]}})
+    picks = p.pga_expert_picks("/content/dam/example/ep-table")
+    assert picks.iloc[0].winner_name == "A Player"

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.6 — 2026-09-25
+
+- Add structured editorial Power Rankings and Expert Picks wrappers using article content-fragment paths.
+- Verify live responses with 15 Power Rankings rows and five Expert Picks rows.
+
 ## 0.3.5 — 2026-09-24
 
 - Add verified team-stroke-play leaderboard and cup team roster functions.

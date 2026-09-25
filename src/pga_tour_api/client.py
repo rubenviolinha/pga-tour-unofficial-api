@@ -2425,3 +2425,37 @@ def pga_cup_team_roster(tournament_id: str) -> pd.DataFrame:
                     "wins": result.get("wins"), "ties": result.get("ties"),
                     "losses": result.get("losses"), "total": result.get("total")})
     return pd.DataFrame(rows)
+
+
+def pga_power_rankings(path: str) -> pd.DataFrame:
+    """Return a structured editorial Power Rankings table for a content path."""
+    data = graphql_request("GetPowerRankingsTable", {"path": path})
+    payload = data.get("getPowerRankingsTable") or {}
+    rows = []
+    for item in payload.get("powerRankingsTableRow") or []:
+        player = item.get("player") or {}
+        rows.append({"player_id": player.get("id"), "first_name": player.get("firstName"),
+            "last_name": player.get("lastName"), "country": player.get("countryName"),
+            "rank": item.get("rank"), "comment": item.get("comment")})
+    result = pd.DataFrame(rows)
+    result.attrs.update({k: v for k, v in payload.items() if k != "powerRankingsTableRow"})
+    result.attrs["content_path"] = path
+    return result
+
+
+def pga_expert_picks(path: str) -> pd.DataFrame:
+    """Return a structured editorial Expert Picks table for a content path."""
+    data = graphql_request("GetExpertPicksTable", {"path": path})
+    payload = data.get("getExpertPicksTable") or {}
+    rows = []
+    for item in payload.get("expertPicksTableRows") or []:
+        winner = item.get("winner") or {}
+        rows.append({"expert_name": item.get("expertName"), "expert_title": item.get("expertTitle"),
+            "lineup": item.get("lineup") or [], "winner_id": winner.get("id"),
+            "winner_name": " ".join(x for x in (winner.get("firstName"), winner.get("lastName")) if x),
+            "percent_selected": item.get("percentSelected"),
+            "percent_selected_color": item.get("percentSelectedColor")})
+    result = pd.DataFrame(rows)
+    result.attrs.update({k: v for k, v in payload.items() if k != "expertPicksTableRows"})
+    result.attrs["content_path"] = path
+    return result

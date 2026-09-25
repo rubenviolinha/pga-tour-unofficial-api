@@ -23,3 +23,6 @@ It also exposes `university_rankings(year=None, week=None)` and
 
 `dp_world_tour_eligibility(year=None, tour="R")` returns the raw Race to Dubai
 eligibility standings.
+
+`power_rankings(path)` and `expert_picks(path)` return the raw editorial tables
+for a content-fragment path embedded in a PGA TOUR article.

@@ -506,6 +506,14 @@ class PgaApi:
         """Return team/cup roster and player results."""
         return self._root("CupTeamRoster", {"tournamentId": tournament_id}, "cupTeamRoster")
 
+    def power_rankings(self, path: str) -> Any:
+        """Return a raw editorial Power Rankings content fragment."""
+        return self._root("GetPowerRankingsTable", {"path": path}, "getPowerRankingsTable")
+
+    def expert_picks(self, path: str) -> Any:
+        """Return a raw editorial Expert Picks content fragment."""
+        return self._root("GetExpertPicksTable", {"path": path}, "getExpertPicksTable")
+
 
     def scorecard_stats(self, tournament_id: str, player_id: str) -> Any:
         """Return decoded player tournament statistics, including every round."""
