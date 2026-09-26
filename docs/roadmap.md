@@ -27,6 +27,14 @@ detail calls were not individually tested.
   `TourCupSplit` operation with ranking ID `2700`; the 2026 request returned 21
   official players.
 
+## Scheduled live coverage
+
+The repository includes `scripts/smoke_live.py` and a weekly GitHub Actions
+workflow. It checks representative historical responses for playoff scorecards,
+playoff shot details, team-stroke-play leaderboards, match-play leaderboards,
+and cup-team rosters. These checks are deliberately separate from the offline
+test suite because the browser-facing service can change or rate-limit requests.
+
 ## Query definitions found; usable data still to verify
 
 | Area | Examples of discovered operations | Remaining work |

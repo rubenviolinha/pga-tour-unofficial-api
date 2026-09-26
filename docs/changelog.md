@@ -2,6 +2,8 @@
 
 ## 0.3.7 — 2026-09-25
 
+- Add scheduled live smoke coverage for playoff, team-stroke, match-play and
+  cup-team endpoints.
 - Add normalized match-play leaderboard support, live-verified against the
   2023 WGC-Dell Technologies Match Play (`R2023470`).
 - Add an opt-in JSON response cache for completed and historical reads, with
