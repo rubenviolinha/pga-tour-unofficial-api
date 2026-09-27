@@ -26,3 +26,7 @@ eligibility standings.
 
 `power_rankings(path)` and `expert_picks(path)` return the raw editorial tables
 for a content-fragment path embedded in a PGA TOUR article.
+
+`historical_odds(tournament_id, player_id, market_id="WINNER")` and
+`historical_tournaments_odds(tournament_id, market_id="WINNER")` preserve the
+historical odds responses, including the upstream availability message.

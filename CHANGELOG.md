@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+- Add raw and normalized historical tournament/player odds wrappers.
+- Preserve upstream provider and availability messages when historical markets
+  are empty instead of presenting unavailable data as populated rows.
+
 ## 0.3.6 — 2026-09-25
 
 - Add structured editorial Power Rankings and Expert Picks wrappers using article content-fragment paths.

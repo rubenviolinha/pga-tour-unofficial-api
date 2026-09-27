@@ -41,7 +41,7 @@ test suite because the browser-facing service can change or rate-limit requests.
 |---|---|---|
 | Delivered / follow-up | `PlayoffScorecardV3`, `PlayoffShotDetailsCompressed` | Wrappers and populated/empty fixtures are implemented; a completed event with actual playoff strokes would provide stronger live validation. |
 | Delivered | `TeamStrokePlayLeaderboardCompressed`, `CupTeamRoster`, `MatchPlayLeaderboardCompressed` | Team-stroke, cup-roster and match-play wrappers are implemented and live-verified. Match play was verified on `R2023470` (2023 WGC-Dell Technologies Match Play), including knockout and group rounds. |
-| Upstream-dependent | `HistoricalOdds`, `HistoricalTournamentsOdds` | Supported enum values are known, but tested events returned explicit “Odds are unavailable” responses; no normalized wrapper is claimed. |
+| Implemented / upstream-dependent | `HistoricalOdds`, `HistoricalTournamentsOdds` | Raw and normalized wrappers preserve populated markets when available and return empty DataFrames with the upstream “Odds are unavailable” message when not. |
 | Delivered | `GetPowerRankingsTable`, `GetExpertPicksTable` | Article content-fragment paths were verified with structured 15-row and five-row responses. |
 | Unverified / excluded | `LeaderboardStats` | The default request for completed event `R2026030` returned type `PROBABILITY` with no players; it remains outside the normalized surface until a populated event is found. |
 
@@ -54,8 +54,10 @@ values `WINNER`, `TOP_RANKED_3`, `TOP_RANKED_5`, `TOP_RANKED_10` and
 `marketId: OddsMarketType!`. Requests for 11 current-season/completed IDs
 (including `R2025018`, `R2026030` and `R2026500`) across `WINNER`,
 `GROUP_WINNER` and `FINISHES` all returned a structured `FANDUEL` response
-with the explicit message “Odds are unavailable.” No normalized odds function
-is claimed until the upstream service supplies populated market data.
+with the explicit message “Odds are unavailable.” The client now exposes raw
+and normalized wrappers, but does not invent rows when the upstream market is
+empty; the DataFrame retains the provider and availability message in
+`attrs`.
 
 ## Delivery checklist for implemented additions
 

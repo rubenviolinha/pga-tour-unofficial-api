@@ -21,10 +21,10 @@ checks = {
     "exported convenience functions": len(functions),
 }
 expected = {
-    "root query documents": 42,
-    "package query documents": 42,
-    "manifest GraphQL operations": 42,
-    "exported convenience functions": 54,
+    "root query documents": 44,
+    "package query documents": 44,
+    "manifest GraphQL operations": 44,
+    "exported convenience functions": 56,
 }
 for label, actual in checks.items():
     print(f"{label}: {actual}")

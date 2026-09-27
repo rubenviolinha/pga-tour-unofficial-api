@@ -284,6 +284,40 @@ class PgaApi:
             "oddsToWinCompressed",
         )
 
+    def historical_odds(
+        self,
+        tournament_id: str,
+        player_id: str,
+        market_id: str = "WINNER",
+        time_stamp: Optional[str] = None,
+    ) -> Any:
+        """Return historical odds for one player and market."""
+        variables: dict[str, Any] = {
+            "playerId": player_id,
+            "tournamentId": tournament_id,
+            "marketId": market_id,
+        }
+        if time_stamp is not None:
+            variables["timeStamp"] = time_stamp
+        return self._root("HistoricalOdds", variables, "historicalOdds")
+
+    def historical_tournaments_odds(
+        self,
+        tournament_id: str,
+        market_id: str = "WINNER",
+        time_stamp: Optional[str] = None,
+    ) -> Any:
+        """Return historical tournament odds and market options."""
+        variables: dict[str, Any] = {
+            "tournamentId": tournament_id,
+            "marketId": market_id,
+        }
+        if time_stamp is not None:
+            variables["timeStamp"] = time_stamp
+        return self._root(
+            "HistoricalTournamentsOdds", variables, "historicalTournamentsOdds"
+        )
+
     def coverage(self, tournament_id: str) -> Any:
         """Return television and streaming coverage windows."""
         return self._root("Coverage", {"tournamentId": tournament_id}, "coverage")

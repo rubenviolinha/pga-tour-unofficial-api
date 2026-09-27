@@ -9,6 +9,8 @@ from pga_tour_api import (
     pga_course_stats_overview,
     pga_field,
     pga_field_stats,
+    pga_historical_odds,
+    pga_historical_tournaments_odds,
     pga_leaderboard_holes,
     pga_odds_markets,
     pga_player_odds,
@@ -119,3 +121,34 @@ def test_player_odds(mock_rest):
     assert len(df) == 1
     assert df.iloc[0]["odds"] == "+250"
     assert isinstance(df, pd.DataFrame)
+
+
+def test_historical_odds(mock_graphql):
+    mock_graphql(load_fixture("HistoricalOdds"))
+    df = pga_historical_odds("R2026030", "52955")
+    assert len(df) == 1
+    assert df.iloc[0]["odds"] == "+800"
+    assert df.attrs["message_header"] is None
+
+
+def test_historical_odds_preserves_unavailable_message(mock_graphql):
+    mock_graphql(load_fixture("HistoricalOddsUnavailable"))
+    df = pga_historical_odds("R2026030", "52955")
+    assert df.empty
+    assert df.attrs["message_header"] == "Odds are unavailable"
+
+
+def test_historical_tournaments_odds_preserves_unavailable_message(mock_graphql):
+    mock_graphql(load_fixture("HistoricalTournamentsOddsUnavailable"))
+    df = pga_historical_tournaments_odds("R2026030")
+    assert df.empty
+    assert df.attrs["provider"] == "FANDUEL"
+    assert df.attrs["message_body"].startswith("Odds are currently unavailable")
+
+
+def test_historical_tournaments_odds(mock_graphql):
+    mock_graphql(load_fixture("HistoricalTournamentsOdds"))
+    df = pga_historical_tournaments_odds("R2026027")
+    assert len(df) == 1
+    assert df.iloc[0]["player_names"] == ["Ludvig Aberg"]
+    assert df.iloc[0]["odds"] == "+800"

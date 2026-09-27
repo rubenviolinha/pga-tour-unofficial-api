@@ -26,6 +26,10 @@
 
 ::: pga_tour_api.pga_player_odds
 
+::: pga_tour_api.pga_historical_odds
+
+::: pga_tour_api.pga_historical_tournaments_odds
+
 ::: pga_tour_api.pga_coverage
 
 ::: pga_tour_api.pga_weather

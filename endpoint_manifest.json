@@ -253,6 +253,24 @@
     {
       "transport": "graphql",
       "method": "POST",
+      "operation": "HistoricalOdds",
+      "variables": "$playerId: String!, $tournamentId: String!, $marketId: HistoricalOddsId!, $timeStamp: AWSDateTime",
+      "root_field": "historicalOdds",
+      "query_file": "graphql/HistoricalOdds.graphql",
+      "compressed": false
+    },
+    {
+      "transport": "graphql",
+      "method": "POST",
+      "operation": "HistoricalTournamentsOdds",
+      "variables": "$tournamentId: String!, $marketId: OddsMarketType!, $timeStamp: AWSDateTime",
+      "root_field": "historicalTournamentsOdds",
+      "query_file": "graphql/HistoricalTournamentsOdds.graphql",
+      "compressed": false
+    },
+    {
+      "transport": "graphql",
+      "method": "POST",
       "operation": "shotDetailsV4Compressed",
       "variables": "$tournamentId: ID!, $playerId: ID!, $round: Int!, $includeRadar: Boolean",
       "root_field": "shotDetailsV4Compressed",

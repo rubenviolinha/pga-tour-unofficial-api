@@ -2118,6 +2118,132 @@ def pga_player_odds(tournament_id: str, player_id: str) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def _historical_attrs(
+    df: pd.DataFrame,
+    payload: dict[str, Any] | None,
+    *,
+    tournament_id: str,
+    market_id: str,
+) -> pd.DataFrame:
+    """Attach upstream context, including an unavailable-odds message."""
+    message = payload.get("message") if isinstance(payload, dict) else None
+    df.attrs.update({
+        "tournament_id": tournament_id,
+        "market_id": market_id,
+        "provider": payload.get("provider") if isinstance(payload, dict) else None,
+        "message_header": message.get("header") if isinstance(message, dict) else None,
+        "message_body": message.get("body") if isinstance(message, dict) else None,
+    })
+    return df
+
+
+def pga_historical_odds(
+    tournament_id: str,
+    player_id: str,
+    market_id: str = "WINNER",
+    time_stamp: str | None = None,
+) -> pd.DataFrame:
+    """Get historical odds for one player.
+
+    Empty or unavailable upstream responses remain empty, with the original
+    availability message preserved in ``DataFrame.attrs``.
+    """
+    variables: dict[str, Any] = {
+        "playerId": player_id,
+        "tournamentId": tournament_id,
+        "marketId": market_id,
+    }
+    if time_stamp is not None:
+        variables["timeStamp"] = time_stamp
+    payload = _safe_get(graphql_request("HistoricalOdds", variables), "historicalOdds")
+    if not isinstance(payload, dict):
+        return _historical_attrs(pd.DataFrame(), None, tournament_id=tournament_id, market_id=market_id)
+
+    if not payload.get("odds") and not payload.get("optionId"):
+        return _historical_attrs(pd.DataFrame(), payload, tournament_id=tournament_id, market_id=market_id)
+
+    row = {
+        "tournament_id": payload.get("tournamentId") or tournament_id,
+        "season": payload.get("season"),
+        "player_id": payload.get("playerId") or player_id,
+        "market_name": payload.get("marketName"),
+        "option_id": payload.get("optionId"),
+        "odds": payload.get("odds"),
+        "odds_swing": payload.get("oddsSwing"),
+        "time_stamp": payload.get("timeStamp"),
+    }
+    return _historical_attrs(pd.DataFrame([row]), payload, tournament_id=tournament_id, market_id=market_id)
+
+
+def _historical_option_rows(
+    payload: dict[str, Any], tournament_id: str, market_id: str
+) -> list[dict[str, Any]]:
+    """Flatten historical tournament market options into analysis rows."""
+    market = payload.get("market") or {}
+    rows: list[dict[str, Any]] = []
+    for sub_market in market.get("subMarkets") or []:
+        if not isinstance(sub_market, dict):
+            continue
+        for option in sub_market.get("options") or []:
+            if not isinstance(option, dict):
+                continue
+            units = (
+                option.get("options")
+                if option.get("__typename") == "OddsMatchupOptionGroup"
+                else [option]
+            )
+            for unit_index, unit in enumerate(units or []):
+                if not isinstance(unit, dict):
+                    continue
+                entity = unit.get("entity") or {}
+                players = entity.get("players") or []
+                odds = unit.get("odds") or {}
+                rows.append({
+                    "tournament_id": payload.get("tournamentId") or tournament_id,
+                    "provider": payload.get("provider"),
+                    "market_id": market_id,
+                    "market_type": market.get("marketType"),
+                    "market_header": market.get("header"),
+                    "sub_market_id": sub_market.get("id"),
+                    "sub_market_header": sub_market.get("header"),
+                    "option_type": option.get("__typename"),
+                    "option_index": unit_index if len(units) > 1 else None,
+                    "entity_id": entity.get("entityId"),
+                    "player_ids": [p.get("playerId") for p in players if isinstance(p, dict)],
+                    "player_names": [p.get("displayName") for p in players if isinstance(p, dict)],
+                    "option_id": odds.get("optionId"),
+                    "odds": odds.get("odds"),
+                    "odds_swing": odds.get("oddsSwing"),
+                    "yes_odds": (unit.get("yesOdds") or {}).get("odds"),
+                    "no_odds": (unit.get("noOdds") or {}).get("odds"),
+                    "is_tie": unit.get("isTie"),
+                })
+    return rows
+
+
+def pga_historical_tournaments_odds(
+    tournament_id: str,
+    market_id: str = "WINNER",
+    time_stamp: str | None = None,
+) -> pd.DataFrame:
+    """Get normalized historical tournament odds.
+
+    Empty markets are expected for many completed events. The returned
+    DataFrame retains the upstream availability message in ``attrs``.
+    """
+    variables: dict[str, Any] = {"tournamentId": tournament_id, "marketId": market_id}
+    if time_stamp is not None:
+        variables["timeStamp"] = time_stamp
+    payload = _safe_get(
+        graphql_request("HistoricalTournamentsOdds", variables),
+        "historicalTournamentsOdds",
+    )
+    if not isinstance(payload, dict):
+        return _historical_attrs(pd.DataFrame(), None, tournament_id=tournament_id, market_id=market_id)
+    rows = _historical_option_rows(payload, tournament_id, market_id)
+    return _historical_attrs(pd.DataFrame(rows), payload, tournament_id=tournament_id, market_id=market_id)
+
+
 def pga_scorecard_stats(tournament_id: str, player_id: str, round: str | None = None) -> pd.DataFrame:
     """Return player tournament statistics, one row per round, section and stat.
 

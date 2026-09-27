@@ -82,6 +82,8 @@ Known comparison categories vary by event; `SCORING` is a useful default.
 | Operation | Variables | Root field | Purpose |
 |---|---|---|---|
 | [`oddsToWinCompressed`](graphql/oddsToWinCompressed.graphql) | `tournamentId: ID!` | `oddsToWinCompressed` | Tournament winner odds |
+| [`HistoricalOdds`](graphql/HistoricalOdds.graphql) | `playerId: String!, tournamentId: String!, marketId: HistoricalOddsId!` | `historicalOdds` | Historical odds for one player |
+| [`HistoricalTournamentsOdds`](graphql/HistoricalTournamentsOdds.graphql) | `tournamentId: String!, marketId: OddsMarketType!` | `historicalTournamentsOdds` | Historical tournament odds and markets |
 
 The REST routes above expose the broader market catalog and per-player market
 views. Odds can be empty when an event is not actively offered.
